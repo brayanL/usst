@@ -4,7 +4,10 @@
 {% block contenido %}
     <div class="row">
         <div class="col-lg-12">
-            <div class="row">
+            <div class="panel panel-green">
+                <div class="panel-heading">Informacion General</div>
+                <div class="panel-body">
+                    <div class="row">
                 <div class="col-md-6">
                     <div class="input-group">
                         <span class="input-group-addon">Localización</span>
@@ -24,27 +27,27 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="input-group">
-                        <span class="input-group-addon">Puesto de Trabajo</span>
-                        {{ form.puesto }}
-                        {{ form.puesto.errors }}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <span class="input-group-addon">Puesto de Trabajo</span>
+                                {{ form.puesto }}
+                                {{ form.puesto.errors }}
+                            </div>
+                            <br>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="input-group date">
+                                <span class="input-group-addon">Fecha Ultima Evaluacion</span>
+                                {{ form.fecha_ul_eval }}
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                                {{ form.fecha_ul_eval.errors }}
+                            </div>
+                        </div>
                     </div>
-                    <br>
-                </div>
-                <div class="col-md-6">
-                    <div class="input-group date">
-                        <span class="input-group-addon">Fecha Ultima Evaluacion</span>
-                        {{ form.fecha_ul_eval }}
-                        <span class="input-group-addon">
-                            <span class="glyphicon glyphicon-calendar"></span>
-                        </span>
-                        {{ form.fecha_ul_eval.errors }}
-                    </div>
-                </div>
-            </div>
-            <div class="row">
+                    <div class="row">
                 <div class="col-md-6">
                     <div class="input-group">
                         <span class="input-group-addon">N° de Trabajadores</span>
@@ -59,15 +62,25 @@
                     </div>
                 </div>
             </div>
+                </div>
+            </div>
         </div>
     </div>
     <div class="row">
-        <div class="panel panel-green">
-            <div class="panel-heading"></div>
+        <div class="col-lg-12">
+            <div class="panel panel-green">
+            <div class="panel-heading">
+                Detalle
+                <div class="pull-right">
+                    <a id="nuevo" class="btn btn-default btn-xs" href="#"><i class="fa fa-plus"></i></a>
+                    <a class="btn btn-default btn-xs" href=""><i class="fa fa-floppy-o"></i></a>
+                </div>
+            </div>
             <div class="panel-body">
-                <table class="table table-bordered">
+                <table id="tb_eval" class="table table-bordered">
                     <thead>
                         <tr>
+                            <th>N°</th>
                             <th>Factor Riesgo</th>
                             <th>Peligro Identificado</th>
                             <th>Probabilidad</th>
@@ -78,15 +91,42 @@
                 </table>
             </div>
         </div>
+        </div>
     </div>
 
     <script type="text/javascript">
+        var friesgo_list = [];
+        var texto= "";
+        $(document).ready(function(){
+            //Para cargar los factores de riesgo
+             $.ajax({
+                 dataType: "json",
+                contentType:"application/json; charset=utf-8",
+                 url: "/carga_friesgos/",
+                 type: "get",
+                 success: function(response){
+                    for(var i=0; i<response.length; i++){
+                        //console.log(response[i].nombre);
+                        friesgo_list.push(response[i].nombre);
+                    }
+                     //console.log(friesgo_list);
+                 }
+             });
+            for(var j=0; j<friesgo_list.length; j++){
+                
+            }
+            $("#tb_eval tr:last").after('');
+
+        });
         $(function () {
             var picker = $('.date').datetimepicker({
                 locale: 'es',
                 showTodayButton: true,
                 format: 'YYYY-MM-DD'
             });
+        });
+        $("#nuevo").click(function(){
+           console.log("Hola");
         });
     </script>
 {% endblock contenido %}
