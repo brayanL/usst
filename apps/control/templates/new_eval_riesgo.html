@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% block titulo_pagina %} Evaluacion de Riesgo {% endblock titulo_pagina %}
+{% block titulo %}Evaluacion de Riesgo{% endblock titulo %}
+{% block contenido %}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-addon">Localización</span>
+                        {{ form.localizacion }}
+                        {{ form.localizacion.errors }}
+                    </div>
+                    <br>
+                </div>
+                <div class="col-md-6">
+                    <div class="input-group date">
+                        <span class="input-group-addon">Fecha Evaluacion</span>
+                        {{ form.fecha_eval }}
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                        {{ form.fecha_eval.errors }}
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-addon">Puesto de Trabajo</span>
+                        {{ form.puesto }}
+                        {{ form.puesto.errors }}
+                    </div>
+                    <br>
+                </div>
+                <div class="col-md-6">
+                    <div class="input-group date">
+                        <span class="input-group-addon">Fecha Ultima Evaluacion</span>
+                        {{ form.fecha_ul_eval }}
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                        {{ form.fecha_ul_eval.errors }}
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-addon">N° de Trabajadores</span>
+                        {{ form.trabajadores }}
+                        {{ form.trabajadores.errors }}
+                    </div>
+                </div>
+                <br>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for=""></label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="panel panel-green">
+            <div class="panel-heading"></div>
+            <div class="panel-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Factor Riesgo</th>
+                            <th>Peligro Identificado</th>
+                            <th>Probabilidad</th>
+                            <th>Consecuencia</th>
+                            <th>Estimación</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        $(function () {
+            var picker = $('.date').datetimepicker({
+                locale: 'es',
+                showTodayButton: true,
+                format: 'YYYY-MM-DD'
+            });
+        });
+    </script>
+{% endblock contenido %}

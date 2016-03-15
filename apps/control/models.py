@@ -10,11 +10,10 @@ class peligros(models.Model):
 
 class evaluacion_riesgo(models.Model):
     localizacion = models.CharField(max_length=50)
-    puestos = models.IntegerField()
-    trabajadores = models.IntegerField()
-    fecha_eval = models.DateField(auto_now=True)
-    fecha_ul_eval = models.DateField()
     puesto = models.ForeignKey(puesto_trabajo)
+    trabajadores = models.IntegerField()
+    fecha_eval = models.DateField()
+    fecha_ul_eval = models.DateField()
     usuario = models.ForeignKey(User)
 
 class peligro_detalle(models.Model):
