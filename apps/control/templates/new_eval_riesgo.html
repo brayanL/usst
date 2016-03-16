@@ -88,6 +88,7 @@
                             <th>Estimación</th>
                         </tr>
                     </thead>
+                    <tbody></tbody>
                 </table>
             </div>
         </div>
@@ -96,7 +97,7 @@
 
     <script type="text/javascript">
         var friesgo_list = [];
-        var texto= "";
+        var num=1;
         $(document).ready(function(){
             //Para cargar los factores de riesgo
              $.ajax({
@@ -106,18 +107,42 @@
                  type: "get",
                  success: function(response){
                     for(var i=0; i<response.length; i++){
-                        //console.log(response[i].nombre);
-                        friesgo_list.push(response[i].nombre);
+                        friesgo_list.push([response[i].nombre, response[i].id]);
                     }
-                     //console.log(friesgo_list);
+                     agregar_filas();
+                     cargar_friesgo();
+                     console.log(friesgo_list);
                  }
              });
-            for(var j=0; j<friesgo_list.length; j++){
-                
-            }
-            $("#tb_eval tr:last").after('');
-
         });
+
+        //Agregar nueva fila a la tabla e incrementa el acumulador para los ids
+        $("#nuevo").click(function(){
+            num +=1;
+           agregar_filas();
+            cargar_friesgo();
+        });
+
+        function agregar_filas(){
+            $("#tb_eval tbody").append(
+                    '<tr><td>'+num+'</td>'+
+                    '<td><select class="form-control" id="sfr'+num+'"></select></td>'+
+                    '<td><select class="form-control" id="spi'+num+'"></select></td>'+
+                    '<td><select class="form-control" id="sprob'+num+'"></select></td>'+
+                    '<td><select class="form-control" id="scon'+num+'"></select></td>'+
+                    '<td></td>'+
+                    '</tr>'
+            );
+        }
+
+        function cargar_friesgo(){
+            for(var j=0; j<friesgo_list.length; j++){
+                console.log("Ingresa");
+                $("#sfr"+num+"").append(new Option(friesgo_list[j][0],friesgo_list[j][1]));
+            }
+        }
+
+
         $(function () {
             var picker = $('.date').datetimepicker({
                 locale: 'es',

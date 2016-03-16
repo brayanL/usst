@@ -12,7 +12,6 @@ def new_eval_riesgo(request):
 
 def carga_friesgos(request):
     if request.method == "GET" and request.is_ajax():
-        friesgo = list(factor_riesgo.objects.values('nombre'))
-        #data = serializers.serialize("json", friesgo)
-        #print(data)
+        friesgo = list(factor_riesgo.objects.values('id', 'nombre'))
+        #print(friesgo)
         return HttpResponse(json.dumps(friesgo), content_type='application/json')
