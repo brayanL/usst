@@ -15,3 +15,12 @@ def carga_friesgos(request):
         friesgo = list(factor_riesgo.objects.values('id', 'nombre'))
         #print(friesgo)
         return HttpResponse(json.dumps(friesgo), content_type='application/json')
+
+def carga_peligros(request):
+    if request.method == "GET" and request.is_ajax():
+        peligroR = request.GET['id1']
+        print(peligroR)
+        to_json = []
+        fpeligro = list(peligro_detalle.objects.filter(peligro=factor_riesgo.objects.get(pk=peligroR)).values('id', 'nombre'))
+        print(fpeligro)
+        return HttpResponse(json.dumps(fpeligro), content_type='application/json')

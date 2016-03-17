@@ -25,6 +25,8 @@ class evaluacion_riesgo(models.Model):
 class peligro_detalle(models.Model):
     nombre = models.CharField(max_length=100)
     peligro = models.ForeignKey(factor_riesgo)
+    def __str__(self):
+        return "%s,%s" % (self.nombre,self.peligro)
 
 class peligro_evaluacion(models.Model):
     evaluacion = models.ForeignKey(evaluacion_riesgo)
