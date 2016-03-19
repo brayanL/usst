@@ -11,25 +11,25 @@
                 <div class="panel-heading">Informacion General</div>
                 <div class="panel-body">
                     <div class="row">
-                <div class="col-md-6">
-                    <div class="input-group">
-                        <span class="input-group-addon">Localización</span>
-                        {{ form.localizacion }}
-                        {{ form.localizacion.errors }}
-                    </div>
-                    <br>
-                </div>
-                <div class="col-md-6">
-                    <div class="input-group date">
-                        <span class="input-group-addon">Fecha Evaluacion</span>
-                        {{ form.fecha_eval }}
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <span class="input-group-addon">Localización</span>
+                                {{ form.localizacion }}
+                                {{ form.localizacion.errors }}
+                            </div>
+                            <br>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="input-group date">
+                                <span class="input-group-addon">Fecha Evaluacion</span>
+                                {{ form.fecha_eval }}
                         <span class="input-group-addon">
                             <span class="glyphicon glyphicon-calendar"></span>
                         </span>
-                        {{ form.fecha_eval.errors }}
+                                {{ form.fecha_eval.errors }}
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="input-group">
@@ -51,20 +51,20 @@
                         </div>
                     </div>
                     <div class="row">
-                <div class="col-md-6">
-                    <div class="input-group">
-                        <span class="input-group-addon">N° de Trabajadores</span>
-                        {{ form.trabajadores }}
-                        {{ form.trabajadores.errors }}
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <span class="input-group-addon">N° de Trabajadores</span>
+                                {{ form.trabajadores }}
+                                {{ form.trabajadores.errors }}
+                            </div>
+                        </div>
+                        <br>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for=""></label>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <br>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for=""></label>
-                    </div>
-                </div>
-            </div>
                 </div>
             </div>
         </div>
@@ -72,16 +72,16 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="panel panel-green">
-            <div class="panel-heading">
-                Detalle
-                <div class="pull-right">
-                    <a id="nuevo" class="btn btn-default btn-xs" href="#"><i class="fa fa-plus"></i></a>
-                    <a class="btn btn-default btn-xs" href=""><i class="fa fa-floppy-o"></i></a>
+                <div class="panel-heading">
+                    Detalle
+                    <div class="pull-right">
+                        <a id="nuevo" class="btn btn-default btn-xs" href="#"><i class="fa fa-plus"></i> Nuevo</a>
+                        <a class="btn btn-default btn-xs" href="#"><i class="fa fa-floppy-o"> Guardar</i></a>
+                    </div>
                 </div>
-            </div>
-            <div class="panel-body">
-                <table id="tb_eval" class="table table-bordered">
-                    <thead>
+                <div class="panel-body">
+                    <table id="tb_eval" class="table table-bordered">
+                        <thead>
                         <tr>
                             <th>N°</th>
                             <th>Factor Riesgo</th>
@@ -90,121 +90,150 @@
                             <th>Consecuencia</th>
                             <th>Estimación de Riesgo</th>
                         </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
         </div>
-        </div>
     </div>
+
     <script type="text/javascript">
         var friesgo_list = [];
         var num=1;
         var cargar;
+
+        //obtiene el id de consecuencia
+        $(document).on("change", ".esti", function(){
+            console.log($(this).attr("id"));
+            var id=$(this).attr("id").substr(4);
+            var probabilidad= $("#sprob"+id).val();
+            var consecuencia=$(this).val();
+            if (probabilidad == "1" && consecuencia == "1"){
+                $("#idE"+id).html("Riesgo Trivial");}
+            if (probabilidad == "1" && consecuencia == "2"){
+                $("#idE"+id).html("Riesgo Tolerable");}
+            if (probabilidad == "1" && consecuencia == "3"){
+                $("#idE"+id).html("Riesgo Moderado");}
+            if (probabilidad == "2" && consecuencia == "1"){
+                $("#idE"+id).html("Riesgo Tolerable");}
+            if (probabilidad == "2" && consecuencia == "2"){
+                $("#idE"+id).html("Riesgo Moderado");}
+            if (probabilidad == "2" && consecuencia == "3"){
+                $("#idE"+id).html("Riesgo Importante");}
+            if (probabilidad == "3" && consecuencia == "1"){
+                $("#idE"+id).html("Riesgo Moderado");}
+            if (probabilidad == "3" && consecuencia == "2"){
+                $("#idE"+id).html("Riesgo Importante");}
+            if (probabilidad == "3" && consecuencia == "3"){
+                $("#idE"+id).html("Riesgo Intolerable");}
+        });
         $(document).ready(function(){
             //Para cargar los factores de riesgo
-             $.ajax({
+            $.ajax({
                 dataType: "json",
                 contentType:"application/json; charset=utf-8",
-                 url: "/carga_friesgos/",
-                 type: "get",
-                 success: function(response){
+                url: "/carga_friesgos/",
+                type: "get",
+                success: function(response){
                     for(var i=0; i<response.length; i++){
                         friesgo_list.push([response[i].nombre, response[i].id]);
                     }
-                     agregar_filas();
-                     cargar_friesgo();
-                     //console.log(friesgo_list);
-                 }
-             });
+                    agregar_filas();
+                    cargar_friesgo();
+                    console.log(friesgo_list);
+                }
+            });
         });
-
         //Agregar nueva fila a la tabla e incrementa el acumulador para los ids
         $("#nuevo").click(function(){
             num +=1;
-           agregar_filas();
+            agregar_filas();
             cargar_friesgo();
         });
-
         function agregar_filas(){
             $("#tb_eval tbody").append(
                     '<tr><td>'+num+'</td>'+
-                    '<td><select class="form-control" id="sfr'+num+'"></select></td>'+
-                    '<td><select class="form-control" id="spi'+num+'"></select></td>'+
-                    '<td><select class="form-control" id="sprob'+num+'"></select></td>'+
-                    '<td><select class="form-control" id="scon'+num+'"></select></td>'+
-                    '<td></td>'+
+                    '<td><select class="form-control rf" id="sfr'+num+'"></select></td>'+
+                    '<td><select class="form-control peli" id="spi'+num+'"></select></td>'+
+                    '<td><select class="form-control pro" id="sprob'+num+'"></select></td>'+
+                    '<td><select class="form-control esti" id="scon'+num+'"></select></td>'+
+                    '<td id="idE'+num+'"></td>'+
                     '</tr>'
             );
         }
-
-        function cargar_friesgo(){
-            $("#sfr"+num+"").append(new Option("",""));
-            for(var j=0; j<friesgo_list.length; j++){
-
-                $("#sfr"+num+"").append(new Option(friesgo_list[j][0],friesgo_list[j][1]));
+        function cargar_friesgo() {
+            $("#sfr" + num + "").append(new Option("", ""));
+            for (var j = 0; j < friesgo_list.length; j++) {
+                $("#sfr" + num + "").append(new Option(friesgo_list[j][0], friesgo_list[j][1]));
             }
         }
-
         //Detectar cuando se dio el evento change del select de riesgos en que se dio click
-        $(document).on("change", "#sfr"+num+"",function(){
+        $(document).on("change", ".rf", function(){
+            //console.log(this);
+            var id=$(this).attr("id").substr(3);
+            cargar= $("#sfr"+id+" option:selected").val();
+            carga_peligros(cargar);
+            console.log(id);
+            $("#spi"+id+"").find('option').remove().end().append('<option value="whatever">Escoja Peligro</option>').val('whatever');
+            //$("#spi"+id+"").empty();
+        });
+        /*$(document).on("change", "#sfr"+num+"",function(){
+            console.log(this);
             cargar= $("#sfr"+num+" option:selected").val();
             console.log(cargar);
             carga_peligros(cargar);
 
             //$("#spi"+num+"").empty();
             $("#spi"+num+"").find('option').remove().end().append('<option value="whatever">Escoja un riesgo</option>').val('whatever');
-
-        });
-
-
+        });*/
         function carga_peligros(id1){
             $.ajax({
                 data: {"id1": id1},
                 dataType: "json",
                 contentType:"application/json; charset=utf-8",
-                 url: "/carga_peligros/",
-                 type: "get",
+                url: "/carga_peligros/",
+                type: "get",
                 success: function(response){
                     for(var i=0; i<response.length; i++){
                         $("#spi"+num).append(new Option(response[i].nombre, response[i].id));
                         console.log(response[i].nombre)
                     }
-                 }
+                }
             });
         }
         //evento de los peligros
-        $(document).on("change", "#spi"+num+"",function(){
-            $("#sprob"+num+"").find('option').remove().end().append('<option value="whatever">Escoja una P</option>').val('whatever');
+        $(document).on("change", ".peli", function(){
+            //console.log(this);
+            var id=$(this).attr("id").substr(3);
+            //$("#sprob"+id+"").find('option').remove().end().append('<option value="whatever">Escoja Prob</option>').val('whatever');
+            $("#sprob"+id+"").empty().append('<option value="whatever">Escoja Prob</option>');
             cargar_Provabilidad();
         });
-
+        /*$(document).on("change", "#spi"+num+"",function(){
+            $("#sprob"+num+"").find('option').remove().end().append('<option value="whatever">Escoja una P</option>').val('whatever');
+            cargar_Provabilidad();
+        });*/
         function cargar_Provabilidad(){
-            $("#sprob"+num+"").append(new Option("Alta"));
-            $("#sprob"+num+"").append(new Option("Media"));
-            $("#sprob"+num+"").append(new Option("Baja"));
-
+            $("#sprob"+num+"").append(new Option("Baja","1"));
+            $("#sprob"+num+"").append(new Option("Media","2"));
+            $("#sprob"+num+"").append(new Option("Alta","3"));
         }
-
-        function cargar_Estimacion(){
-            var probabilidad = "sprob"+num+"";
-            var consecuencia = "scpn"+num+"";
-            if (probabilidad.value="Alta" and consecuencia.value="Ligeramente Dañina"){
-
-            }
-        }
-
         //evento de probabilidad
-        $(document).on("change", "#sprob"+num+"",function(){
-            $("#scon"+num+"").find('option').remove().end().append('<option value="whatever">Escoja una P</option>').val('whatever');
+        $(document).on("change", ".pro", function(){
+            //console.log(this);
+            var id=$(this).attr("id").substr(5);
+            $("#scon"+id+"").find('option').remove().end().append('<option value="whatever">Escoja Consecuencia</option>').val('whatever');
             cargar_Consecuencia();
         });
-
+        /*$(document).on("change", "#sprob"+num+"",function(){
+            $("#scon"+num+"").find('option').remove().end().append('<option value="whatever">Escoja una P</option>').val('whatever');
+            cargar_Consecuencia();
+        });*/
         function cargar_Consecuencia(){
-            $("#scon"+num+"").append(new Option("Ligeramente Dañina"));
-            $("#scon"+num+"").append(new Option("dañina"));
-            $("#scon"+num+"").append(new Option("Extremadamente Dañina"));
-
+            $("#scon"+num+"").append(new Option("Ligeramente Dañina","1"));
+            $("#scon"+num+"").append(new Option("dañina","2"));
+            $("#scon"+num+"").append(new Option("Extremadamente Dañina","3"));
         }
         $(function () {
             var picker = $('.date').datetimepicker({
@@ -214,7 +243,7 @@
             });
         });
         $("#nuevo").click(function(){
-           //console.log("Hola");
+            //console.log("Hola");
         });
     </script>
 {% endblock contenido %}

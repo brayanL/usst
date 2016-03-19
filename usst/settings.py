@@ -39,7 +39,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'apps.control',
-    'apps.inicio'
+    'apps.inicio',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -82,8 +82,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         "NAME": "usst_db",
-        "USER": "postgres",
-        "PASSWORD": "poker12324",
+        "USER": "user1",
+        "PASSWORD": "admin",
         "HOST": "localhost",
         "PORT": "5432",
     }
