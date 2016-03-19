@@ -1,133 +1,123 @@
 {% extends 'base.html' %}
-{% block titulo_pagina %} Evaluacion de Riesgo {% endblock titulo_pagina %}
+{% block titulo_pagina %} Evaluacion de Riesgo{% endblock titulo_pagina %}
 {% block titulo %}Evaluacion de Riesgo{% endblock titulo %}
-{% block codigo %}
-{% endblock codigo %}
 {% block contenido %}
+    <form action="{% url 'control_app:new_eval_riesgo' %}" method="post">{% csrf_token %}
+        <!--Cabecera -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-green">
+                    <div class="panel-heading">Informacion General</div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <span class="input-group-addon">Localización</span>
+                                    {{ form.localizacion }}
+                                    {{ form.localizacion.errors }}
+                                </div>
+                                <br>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="input-group date">
+                                    <span class="input-group-addon">Fecha Evaluacion</span>
+                                    {{ form.fecha_eval }}
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                                    {{ form.fecha_eval.errors }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <span class="input-group-addon">Puesto de Trabajo</span>
+                                    {{ form.puesto }}
+                                    {{ form.puesto.errors }}
+                                </div>
+                                <br>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="input-group date">
+                                    <span class="input-group-addon">Fecha Ultima Evaluacion</span>
+                                    {{ form.fecha_ul_eval }}
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                    {{ form.fecha_ul_eval.errors }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <span class="input-group-addon">N° de Trabajadores</span>
+                                    {{ form.trabajadores }}
+                                    {{ form.trabajadores.errors }}
+                                </div>
+                            </div>
+                            <br>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for=""></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="panel panel-green">
-                <div class="panel-heading">Informacion General</div>
-                <div class="panel-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="input-group">
-                                <span class="input-group-addon">Localización</span>
-                                {{ form.localizacion }}
-                                {{ form.localizacion.errors }}
-                            </div>
-                            <br>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="input-group date">
-                                <span class="input-group-addon">Fecha Evaluacion</span>
-                                {{ form.fecha_eval }}
-                        <span class="input-group-addon">
-                            <span class="glyphicon glyphicon-calendar"></span>
-                        </span>
-                                {{ form.fecha_eval.errors }}
-                            </div>
+        <!-- Tabla -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-green">
+                    <div class="panel-heading">
+                        Detalle
+                        <div class="pull-right">
+                            <a id="nuevo" class="btn btn-default btn-xs"><i class="fa fa-plus"></i> Nuevo</a>
+                            <a id="del" class="btn btn-default btn-xs"><i class="fa fa-trash-o"></i> Eliminar</a>
+                            <!--<a class="btn btn-default btn-xs" href="#"><i class="fa fa-floppy-o"> Guardar</i></a>-->
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="input-group">
-                                <span class="input-group-addon">Puesto de Trabajo</span>
-                                {{ form.puesto }}
-                                {{ form.puesto.errors }}
-                            </div>
-                            <br>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="input-group date">
-                                <span class="input-group-addon">Fecha Ultima Evaluacion</span>
-                                {{ form.fecha_ul_eval }}
-                                <span class="input-group-addon">
-                                    <span class="glyphicon glyphicon-calendar"></span>
-                                </span>
-                                {{ form.fecha_ul_eval.errors }}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="input-group">
-                                <span class="input-group-addon">N° de Trabajadores</span>
-                                {{ form.trabajadores }}
-                                {{ form.trabajadores.errors }}
-                            </div>
-                        </div>
-                        <br>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for=""></label>
-                            </div>
-                        </div>
+                    <div class="panel-body">
+                        <table id="tb_eval" class="table table-bordered table-color">
+                            <thead>
+                            <tr>
+                                <th>N°</th>
+                                <th>Factor Riesgo</th>
+                                <th>Peligro Identificado</th>
+                                <th>Probabilidad</th>
+                                <th>Consecuencia</th>
+                                <th>Estimación de Riesgo</th>
+                            </tr>
+                            </thead>
+                            <tbody id="bd_fr"></tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="panel panel-green">
-                <div class="panel-heading">
-                    Detalle
-                    <div class="pull-right">
-                        <a id="nuevo" class="btn btn-default btn-xs" href="#"><i class="fa fa-plus"></i> Nuevo</a>
-                        <a class="btn btn-default btn-xs" href="#"><i class="fa fa-floppy-o"> Guardar</i></a>
+
+        <!-- Panel Guardar -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="pull-right"> <button type="submit" class="btn btn-primary"><i class="fa fa-floppy-o"></i> Guardar</button></div>
                     </div>
-                </div>
-                <div class="panel-body">
-                    <table id="tb_eval" class="table table-bordered">
-                        <thead>
-                        <tr>
-                            <th>N°</th>
-                            <th>Factor Riesgo</th>
-                            <th>Peligro Identificado</th>
-                            <th>Probabilidad</th>
-                            <th>Consecuencia</th>
-                            <th>Estimación de Riesgo</th>
-                        </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
                 </div>
             </div>
         </div>
-    </div>
+    </form>
 
     <script type="text/javascript">
         var friesgo_list = [];
         var num=1;
-        var cargar;
+        var id_fr;
+        var fila;
 
-        //obtiene el id de consecuencia
-        $(document).on("change", ".esti", function(){
-            console.log($(this).attr("id"));
-            var id=$(this).attr("id").substr(4);
-            var probabilidad= $("#sprob"+id).val();
-            var consecuencia=$(this).val();
-            if (probabilidad == "1" && consecuencia == "1"){
-                $("#idE"+id).html("Riesgo Trivial");}
-            if (probabilidad == "1" && consecuencia == "2"){
-                $("#idE"+id).html("Riesgo Tolerable");}
-            if (probabilidad == "1" && consecuencia == "3"){
-                $("#idE"+id).html("Riesgo Moderado");}
-            if (probabilidad == "2" && consecuencia == "1"){
-                $("#idE"+id).html("Riesgo Tolerable");}
-            if (probabilidad == "2" && consecuencia == "2"){
-                $("#idE"+id).html("Riesgo Moderado");}
-            if (probabilidad == "2" && consecuencia == "3"){
-                $("#idE"+id).html("Riesgo Importante");}
-            if (probabilidad == "3" && consecuencia == "1"){
-                $("#idE"+id).html("Riesgo Moderado");}
-            if (probabilidad == "3" && consecuencia == "2"){
-                $("#idE"+id).html("Riesgo Importante");}
-            if (probabilidad == "3" && consecuencia == "3"){
-                $("#idE"+id).html("Riesgo Intolerable");}
-        });
         $(document).ready(function(){
             //Para cargar los factores de riesgo
             $.ajax({
@@ -145,48 +135,65 @@
                 }
             });
         });
+
+        //Para obtener el id de la fila actual de la tabla
+        $("#bd_fr").on('change', 'tr', function(){
+            var $td = $(this).closest('tr').children('td');
+            fila = $td.eq(0).text();
+            //console.log("Id Fila: "+fila);
+        });
+
+        //Para pintar la fila de un color
+        $("#tb_eval").on('click', 'tr', function(){
+            $(this).addClass('highlight').siblings().removeClass('highlight');
+        });
+
         //Agregar nueva fila a la tabla e incrementa el acumulador para los ids
         $("#nuevo").click(function(){
             num +=1;
             agregar_filas();
             cargar_friesgo();
         });
+
+        //Para eliminar la ultima fila de la tabla seleccionada
+        $("#del").click(function(){
+            var tabla = $("#tb_eval tbody>tr");
+            var fila_ultima= $("#tb_eval tbody>tr:last");
+            if(tabla.length > 1 && fila_ultima.attr("class")=="highlight")
+            {
+                //decremento para que la nueva fila tenga los ids correctos
+                num-=1;
+                fila_ultima.remove();
+            }
+        });
+
         function agregar_filas(){
             $("#tb_eval tbody").append(
                     '<tr><td>'+num+'</td>'+
-                    '<td><select class="form-control rf" id="sfr'+num+'"></select></td>'+
-                    '<td><select class="form-control peli" id="spi'+num+'"></select></td>'+
-                    '<td><select class="form-control pro" id="sprob'+num+'"></select></td>'+
-                    '<td><select class="form-control esti" id="scon'+num+'"></select></td>'+
-                    '<td id="idE'+num+'"></td>'+
+                    '<td><select class="form-control rf" name="rf'+num+'" id="sfr'+num+'" required></select></td>'+
+                    '<td><select class="form-control peli" name="peli'+num+'" id="spi'+num+'" required></select></td>'+
+                    '<td><select class="form-control pro" name="pro'+num+'" id="sprob'+num+'" required></select></td>'+
+                    '<td><select class="form-control con" name="con'+num+'" id="scon'+num+'" required></select></td>'+
+                    '<td><input type="text" class="form-control" name="er'+num+'" id="er'+num+'" required></td>'+
                     '</tr>'
             );
         }
+
         function cargar_friesgo() {
             $("#sfr" + num + "").append(new Option("", ""));
             for (var j = 0; j < friesgo_list.length; j++) {
                 $("#sfr" + num + "").append(new Option(friesgo_list[j][0], friesgo_list[j][1]));
             }
         }
+
         //Detectar cuando se dio el evento change del select de riesgos en que se dio click
         $(document).on("change", ".rf", function(){
-            //console.log(this);
-            var id=$(this).attr("id").substr(3);
-            cargar= $("#sfr"+id+" option:selected").val();
-            carga_peligros(cargar);
-            console.log(id);
-            //$("#spi"+id+"").find('option').remove().end().append('<option value="whatever">Escoja Peligro</option>').val('whatever');
-            //$("#spi"+id+"").empty();
-        });
-        /*$(document).on("change", "#sfr"+num+"",function(){
-            console.log(this);
-            cargar= $("#sfr"+num+" option:selected").val();
-            console.log(cargar);
-            carga_peligros(cargar);
+            id_fr= $("#sfr"+fila+" option:selected").val();
 
-            //$("#spi"+num+"").empty();
-            $("#spi"+num+"").find('option').remove().end().append('<option value="whatever">Escoja un riesgo</option>').val('whatever');
-        });*/
+            $("#spi"+fila+"").find('option').remove().end().append('<option value=""></option>').val('');
+            carga_peligros(id_fr);
+        });
+
         function carga_peligros(id1){
             $.ajax({
                 data: {"id1": id1},
@@ -196,54 +203,73 @@
                 type: "get",
                 success: function(response){
                     for(var i=0; i<response.length; i++){
-                        $("#spi"+num).append(new Option(response[i].nombre, response[i].id));
+                        $("#spi"+fila).append(new Option(response[i].nombre, response[i].id));
                         console.log(response[i].nombre)
                     }
                 }
             });
         }
+
         //evento de los peligros
         $(document).on("change", ".peli", function(){
-            //console.log(this);
-            var id=$(this).attr("id").substr(3);
-            //$("#sprob"+id+"").find('option').remove().end().append('<option value="whatever">Escoja Prob</option>').val('whatever');
-            //$("#sprob"+id+"").empty().append('<option value="whatever">Escoja Prob</option>');
+            $("#sprob"+fila+"").find('option').remove().end().append('<option value=""></option>');
             cargar_Provabilidad();
         });
-        /*$(document).on("change", "#spi"+num+"",function(){
-            $("#sprob"+num+"").find('option').remove().end().append('<option value="whatever">Escoja una P</option>').val('whatever');
-            cargar_Provabilidad();
-        });*/
+
+
         function cargar_Provabilidad(){
-            $("#sprob"+num+"").append(new Option("Baja","1"));
-            $("#sprob"+num+"").append(new Option("Media","2"));
-            $("#sprob"+num+"").append(new Option("Alta","3"));
+            $("#sprob"+fila+"").append(new Option("Baja","B")).
+                    append(new Option("Media","M")).
+                    append(new Option("Alta","A"));
         }
+
         //evento de probabilidad
         $(document).on("change", ".pro", function(){
-            //console.log(this);
-            var id=$(this).attr("id").substr(5);
-            //$("#scon"+id+"").find('option').remove().end().append('<option value="whatever">Escoja Consecuencia</option>').val('whatever');
+            $("#scon"+fila+"").find('option').remove().end().append('<option value=""></option>');
+            $("#er"+fila+"").val("").css("background-color","#ffffff");
             cargar_Consecuencia();
         });
-        /*$(document).on("change", "#sprob"+num+"",function(){
-            $("#scon"+num+"").find('option').remove().end().append('<option value="whatever">Escoja una P</option>').val('whatever');
-            cargar_Consecuencia();
-        });*/
+
         function cargar_Consecuencia(){
-            $("#scon"+num+"").append(new Option("Ligeramente Dañina","1"));
-            $("#scon"+num+"").append(new Option("dañina","2"));
-            $("#scon"+num+"").append(new Option("Extremadamente Dañina","3"));
+            $("#scon"+fila+"").append(new Option("Ligeramente Dañina","LD"))
+                            .append(new Option("Dañina","D"))
+                            .append(new Option("Extremadamente Dañina","ED"));
         }
+
+        //Condiciones para la Estimacion de Riesgo
+        $(document).on("change", ".con", function(){
+
+
+            var probabilidad= $("#sprob"+fila).val();
+
+            var consecuencia=$(this).val();
+
+            if (probabilidad == "B" && consecuencia == "LD")
+                $("#er"+fila).val("Riesgo Trivial [T]").css("background-color","#ffff99").css("color","black").css("text-align", "center");
+            if (probabilidad == "B" && consecuencia == "D")
+                $("#er"+fila).val("Riesgo Tolerable").css("background-color","#ffff00").css("color","black").css("text-align", "center");
+            if (probabilidad == "B" && consecuencia == "ED")
+                $("#er"+fila).val("Riesgo Moderado").css("background-color","#ff6666").css("color","black").css("text-align", "center");
+            if (probabilidad == "M" && consecuencia == "LD")
+                $("#er"+fila).val("Riesgo Tolerable").css("background-color","#ffff00").css("color","black").css("text-align", "center");
+            if (probabilidad == "M" && consecuencia == "D")
+                $("#er"+fila).val("Riesgo Moderado").css("background-color","#ff6666").css("color","black").css("text-align", "center");
+            if (probabilidad == "M" && consecuencia == "ED")
+                $("#er"+fila).val("Riesgo Importante").css("background-color","#c2c2d6").css("color","black").css("text-align", "center");
+            if (probabilidad == "A" && consecuencia == "LD")
+                $("#er"+fila).val("Riesgo Moderado").css("background-color","#ff6666").css("color","black").css("text-align", "center");
+            if (probabilidad == "A" && consecuencia == "D")
+                $("#er"+fila).val("Riesgo Importante").css("background-color","#c2c2d6").css("color","black").css("text-align", "center");
+            if (probabilidad == "A" && consecuencia == "ED")
+                $("#er"+fila).val("Riesgo Intolerable").css("background-color","#ff0000").css("color","black").css("text-align", "center");
+        });
+
         $(function () {
             var picker = $('.date').datetimepicker({
                 locale: 'es',
                 showTodayButton: true,
                 format: 'YYYY-MM-DD'
             });
-        });
-        $("#nuevo").click(function(){
-            //console.log("Hola");
         });
     </script>
 {% endblock contenido %}

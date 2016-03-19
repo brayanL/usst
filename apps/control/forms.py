@@ -5,9 +5,9 @@ class EvalRiesgoForm(ModelForm):
         model = evaluacion_riesgo
         fields = "__all__"
         widgets = {
-            "localizacion": TextInput(attrs={"class": "form-control"}),
-            "puesto": Select(attrs={"class": "form-control"}),
-            "trabajadores": NumberInput(attrs={"class": "form-control"}),
-            "fecha_eval": DateInput(attrs={"class": "form-control"}),
+            "localizacion": TextInput(attrs={"class": "form-control", "required": True}),
+            "puesto": TextInput(attrs={"class": "form-control", "required": True}),
+            "trabajadores": NumberInput(attrs={"class": "form-control", "required": True}),
+            "fecha_eval": DateInput(attrs={"class": "form-control", "required": True}),
             "fecha_ul_eval": DateInput(attrs={"class": "form-control"})
         }

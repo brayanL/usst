@@ -3,7 +3,6 @@ from .models import *
 
 
 admin.site.register(evaluacion_riesgo)
-admin.site.register(puesto_trabajo)
 admin.site.register(factor_riesgo)
 admin.site.register(peligro_detalle)
 admin.site.register(peligro_evaluacion)

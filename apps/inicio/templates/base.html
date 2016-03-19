@@ -29,6 +29,9 @@
 
         <!-- Para Fechas -->
         <link rel="stylesheet" href="{% static 'sb-admin/css/plugins/timepicker/bootstrap-datetimepicker.min.css' %}">
+
+        <!-- Estilos Personalizados -->
+        <link rel="stylesheet" href="{% static 'sb-admin/css/custom_styles.css' %}">
     {% endblock css %}
 
     {% block js %}
@@ -53,7 +56,6 @@
         <script src="{% static 'sb-admin/js/plugins/timepicker/bootstrap-datetimepicker.min.js' %}"></script>
         <script src="{% static 'sb-admin/js/plugins/timepicker/es.js' %}"></script>
 
-        {% block codigo %}{% endblock codigo %}
     {% endblock js %}
 </head>
 <body>

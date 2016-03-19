@@ -2,12 +2,6 @@ from django.db import models
 from django.contrib.auth.models import User
 
 # Create your models here.
-class puesto_trabajo(models.Model):
-    nombre = models.CharField(max_length=50)
-
-    def __str__(self):
-        return "%s" % (self.nombre)
-
 class factor_riesgo(models.Model):
     nombre = models.CharField(max_length=30)
 
@@ -15,12 +9,13 @@ class factor_riesgo(models.Model):
         return "%s" % (self.nombre)
 
 class evaluacion_riesgo(models.Model):
-    localizacion = models.CharField(max_length=100)
-    puesto = models.ForeignKey(puesto_trabajo)
+    localizacion = models.CharField(max_length=200)
+    puesto = models.CharField(max_length=200)
     trabajadores = models.IntegerField()
     fecha_eval = models.DateField()
     fecha_ul_eval = models.DateField()
     usuario = models.ForeignKey(User)
+    evaluacion = models.BooleanField(default=False)
 
 class peligro_detalle(models.Model):
     nombre = models.CharField(max_length=100)

@@ -80,14 +80,19 @@ WSGI_APPLICATION = 'usst.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        "NAME": "usst_db",
-        "USER": "user1",
-        "PASSWORD": "admin",
-        "HOST": "localhost",
-        "PORT": "5432",
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
+# Allow any settings to be defined in local_settings.py which should be
+# ignored in your version control system allowing for settings to be
+# defined per machine.
+try:
+    from local_settings import *
+except ImportError as e:
+    if "local_settings" not in str(e):
+        raise e
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/

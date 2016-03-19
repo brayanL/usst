@@ -1,0 +1,4 @@
+/*Para color de la fila seleccionada*/
+.table-color tbody tr.highlight td {
+            background-color: #d9edf7;
+        }
