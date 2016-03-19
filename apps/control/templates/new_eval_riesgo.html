@@ -175,7 +175,7 @@
             cargar= $("#sfr"+id+" option:selected").val();
             carga_peligros(cargar);
             console.log(id);
-            $("#spi"+id+"").find('option').remove().end().append('<option value="whatever">Escoja Peligro</option>').val('whatever');
+            //$("#spi"+id+"").find('option').remove().end().append('<option value="whatever">Escoja Peligro</option>').val('whatever');
             //$("#spi"+id+"").empty();
         });
         /*$(document).on("change", "#sfr"+num+"",function(){
@@ -207,7 +207,7 @@
             //console.log(this);
             var id=$(this).attr("id").substr(3);
             //$("#sprob"+id+"").find('option').remove().end().append('<option value="whatever">Escoja Prob</option>').val('whatever');
-            $("#sprob"+id+"").empty().append('<option value="whatever">Escoja Prob</option>');
+            //$("#sprob"+id+"").empty().append('<option value="whatever">Escoja Prob</option>');
             cargar_Provabilidad();
         });
         /*$(document).on("change", "#spi"+num+"",function(){
@@ -223,7 +223,7 @@
         $(document).on("change", ".pro", function(){
             //console.log(this);
             var id=$(this).attr("id").substr(5);
-            $("#scon"+id+"").find('option').remove().end().append('<option value="whatever">Escoja Consecuencia</option>').val('whatever');
+            //$("#scon"+id+"").find('option').remove().end().append('<option value="whatever">Escoja Consecuencia</option>').val('whatever');
             cargar_Consecuencia();
         });
         /*$(document).on("change", "#sprob"+num+"",function(){
