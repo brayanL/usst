@@ -95,6 +95,8 @@
                             </thead>
                             <tbody id="bd_fr"></tbody>
                         </table>
+                        <!-- Para guardar la cantidad de filas que tiene la tabla -->
+                        <input type="hidden" id="num_filas" name="num_filas">
                     </div>
                 </div>
             </div>
@@ -131,7 +133,8 @@
                     }
                     agregar_filas();
                     cargar_friesgo();
-                    console.log(friesgo_list);
+                    $("#num_filas").val(document.getElementById("bd_fr").rows.length);
+                    //console.log(friesgo_list);
                 }
             });
         });
@@ -151,8 +154,10 @@
         //Agregar nueva fila a la tabla e incrementa el acumulador para los ids
         $("#nuevo").click(function(){
             num +=1;
+            //$("#num_filas").val($("#tb_eval tbody>tr").length);
             agregar_filas();
             cargar_friesgo();
+            $("#num_filas").val(document.getElementById("bd_fr").rows.length);
         });
 
         //Para eliminar la ultima fila de la tabla seleccionada
@@ -164,7 +169,10 @@
                 //decremento para que la nueva fila tenga los ids correctos
                 num-=1;
                 fila_ultima.remove();
+                $("#num_filas").val(document.getElementById("bd_fr").rows.length);
             }
+            else
+                $.notify("No puede eliminar la primera fila", { position:"top center", "className": "error"});
         });
 
         function agregar_filas(){
@@ -174,7 +182,7 @@
                     '<td><select class="form-control peli" name="peli'+num+'" id="spi'+num+'" required></select></td>'+
                     '<td><select class="form-control pro" name="pro'+num+'" id="sprob'+num+'" required></select></td>'+
                     '<td><select class="form-control con" name="con'+num+'" id="scon'+num+'" required></select></td>'+
-                    '<td><input type="text" class="form-control" name="er'+num+'" id="er'+num+'" required></td>'+
+                    '<td><select class="form-control" name="er'+num+'" id="er'+num+'" required readonly></select></td>'+
                     '</tr>'
             );
         }
@@ -226,7 +234,7 @@
         //evento de probabilidad
         $(document).on("change", ".pro", function(){
             $("#scon"+fila+"").find('option').remove().end().append('<option value=""></option>');
-            $("#er"+fila+"").val("").css("background-color","#ffffff");
+            $("#er"+fila+"").find('option').remove().end().css("background-color","#ffffff");
             cargar_Consecuencia();
         });
 
@@ -239,29 +247,32 @@
         //Condiciones para la Estimacion de Riesgo
         $(document).on("change", ".con", function(){
 
+            //Limpia las filas de estimacion de riesgo
+            $("#er"+fila+"").find('option').remove().end();
 
+            //Obteniendo los values de select probabilidad y consecuencia
             var probabilidad= $("#sprob"+fila).val();
 
             var consecuencia=$(this).val();
 
             if (probabilidad == "B" && consecuencia == "LD")
-                $("#er"+fila).val("Riesgo Trivial [T]").css("background-color","#ffff99").css("color","black").css("text-align", "center");
+                $("#er"+fila).find('option').remove().end().append(new Option("Riesgo Trivial","T")).css("background-color","#ffff99").css("color","black").css("text-align", "center");
             if (probabilidad == "B" && consecuencia == "D")
-                $("#er"+fila).val("Riesgo Tolerable").css("background-color","#ffff00").css("color","black").css("text-align", "center");
+                $("#er"+fila).append(new Option("Riesgo Tolerable","TO")).css("background-color","#ffff00").css("color","black").css("text-align", "center");
             if (probabilidad == "B" && consecuencia == "ED")
-                $("#er"+fila).val("Riesgo Moderado").css("background-color","#ff6666").css("color","black").css("text-align", "center");
+                $("#er"+fila).append(new Option("Riesgo Moderado", "M")).css("background-color","#ff6666").css("color","black").css("text-align", "center");
             if (probabilidad == "M" && consecuencia == "LD")
-                $("#er"+fila).val("Riesgo Tolerable").css("background-color","#ffff00").css("color","black").css("text-align", "center");
+                $("#er"+fila).append(new Option("Riesgo Tolerable","TO")).css("background-color","#ffff00").css("color","black").css("text-align", "center");
             if (probabilidad == "M" && consecuencia == "D")
-                $("#er"+fila).val("Riesgo Moderado").css("background-color","#ff6666").css("color","black").css("text-align", "center");
+                $("#er"+fila).append(new Option("Riesgo Moderado", "M")).css("background-color","#ff6666").css("color","black").css("text-align", "center");
             if (probabilidad == "M" && consecuencia == "ED")
-                $("#er"+fila).val("Riesgo Importante").css("background-color","#c2c2d6").css("color","black").css("text-align", "center");
+                $("#er"+fila).append(new Option("Riesgo Importante", "I")).css("background-color","#c2c2d6").css("color","black").css("text-align", "center");
             if (probabilidad == "A" && consecuencia == "LD")
-                $("#er"+fila).val("Riesgo Moderado").css("background-color","#ff6666").css("color","black").css("text-align", "center");
+                $("#er"+fila).append(new Option("Riesgo Moderado", "M")).css("background-color","#ff6666").css("color","black").css("text-align", "center");
             if (probabilidad == "A" && consecuencia == "D")
-                $("#er"+fila).val("Riesgo Importante").css("background-color","#c2c2d6").css("color","black").css("text-align", "center");
+                $("#er"+fila).append(new Option("Riesgo Importante", "I")).css("background-color","#c2c2d6").css("color","black").css("text-align", "center");
             if (probabilidad == "A" && consecuencia == "ED")
-                $("#er"+fila).val("Riesgo Intolerable").css("background-color","#ff0000").css("color","black").css("text-align", "center");
+                $("#er"+fila).append(new Option("Riesgo Intolerable", "IN")).css("background-color","#ff0000").css("color","black").css("text-align", "center");
         });
 
         $(function () {

@@ -56,6 +56,9 @@
         <script src="{% static 'sb-admin/js/plugins/timepicker/bootstrap-datetimepicker.min.js' %}"></script>
         <script src="{% static 'sb-admin/js/plugins/timepicker/es.js' %}"></script>
 
+        <!-- Para notificaciones -->
+        <script src="{% static 'sb-admin/js/plugins/notify/notify.js' %}"></script>
+
     {% endblock js %}
 </head>
 <body>
@@ -176,5 +179,15 @@
         <!-- /#page-wrapper -->
     </div>
 {% endblock login %}
+
+ <!-- Para todas las notificaciones-->
+<script>
+    $(document).ready(function(){
+        {% for message in messages %}
+            $.notify("{{ message }}", { position:"top center", "className": "{{ message.tags }}"});
+        {% endfor %}
+    });
+</script>
+
 </body>
 </html>
