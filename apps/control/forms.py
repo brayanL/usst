@@ -3,7 +3,7 @@ from .models import *
 class EvalRiesgoForm(ModelForm):
     class Meta:
         model = evaluacion_riesgo
-        fields = "__all__"
+        exclude = ('usuario', 'evaluacion')
         widgets = {
             "localizacion": TextInput(attrs={"class": "form-control", "required": True}),
             "puesto": TextInput(attrs={"class": "form-control", "required": True}),

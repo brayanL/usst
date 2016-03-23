@@ -3,19 +3,23 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.db import transaction
 from django.contrib import messages
-
+from django.contrib.auth.decorators import login_required
 from .forms import *
 from .models import factor_riesgo, evaluacion_riesgo, peligro_evaluacion
 
 # Create your views here.
+
+
+@login_required
 def new_eval_riesgo(request):
     if request.method == "POST":
         try:
             with transaction.atomic():
                 mfer = EvalRiesgoForm(request.POST)
                 if mfer.is_valid():
-                    er =mfer.save(commit=False)
-                    er.usuario = request.user
+                    er = mfer.save(commit=False)
+                    er.usuario = User.objects.get(pk=request.user.id)
+                    er.evaluacion = True
                     er.save()
                     messages.info(request, "Se ha guardado con éxito el nuevo registro.")
                     return redirect("/eval_riesgo/")
@@ -27,8 +31,8 @@ def new_eval_riesgo(request):
             print(error)
             transaction.rollback()
             messages.error(request, ("Comuniquese con Soporte técnico. "+ str(error)))
+            print("Error: " + str(error))
             return redirect('/eval_riesgo/')
-
     form = EvalRiesgoForm()
     return render(request, "new_eval_riesgo.html", {"collapse_er": "in", "active_n": "active", "form": form})
 

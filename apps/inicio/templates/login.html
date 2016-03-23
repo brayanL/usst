@@ -8,7 +8,12 @@
                         <h3 class="panel-title">Inicio de Sesion</h3>
                     </div>
                     <div class="panel-body">
-                        <form action="{% url 'inicio_app:login' %}" method="post" role="form">{% csrf_token %}
+                        {% if request.GET.next %}
+                            <form action="{% url 'inicio_app:login' %}" method="post" role="form">{% csrf_token %}
+                            <input type="hidden" name="next" value="{{ request.GET.next }}">
+                        {% else %}
+                            <form action="{% url 'inicio_app:login' %}" method="post" role="form">{% csrf_token %}
+                        {% endif %}
                             <fieldset>
                                 <div class="form-group">
                                     {{ form.username }}
