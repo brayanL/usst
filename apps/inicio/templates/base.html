@@ -32,6 +32,11 @@
 
         <!-- Estilos Personalizados -->
         <link rel="stylesheet" href="{% static 'sb-admin/css/custom_styles.css' %}">
+
+        <!-- Tables -->
+        <link rel="stylesheet" href="{% static 'sb-admin/css/plugins/datatables/dataTables.bootstrap.min.css' %}">
+        <link rel="stylesheet" href="{% static 'sb-admin/css/plugins/datatables/buttons.dataTables.min.css' %}">
+        <link rel="stylesheet" href="{% static 'sb-admin/css/plugins/datatables/responsive.bootstrap.min.css' %}">
     {% endblock css %}
 
     {% block js %}
@@ -58,6 +63,13 @@
 
         <!-- Para notificaciones -->
         <script src="{% static 'sb-admin/js/plugins/notify/notify.js' %}"></script>
+
+        <!-- Tables -->
+        <script src="{% static 'sb-admin/js/plugins/datatables/jquery.dataTables.min.js' %}"></script>
+        <script src="{% static 'sb-admin/js/plugins/datatables/dataTables.bootstrap.min.js' %}"></script>
+        <script src="{% static 'sb-admin/js/plugins/datatables/buttons.bootstrap.min.js' %}"></script>
+        <script src="{% static 'sb-admin/js/plugins/datatables/dataTables.responsive.min.js' %}"></script>
+        <script src="{% static '' %}"></script>
 
     {% endblock js %}
 </head>
