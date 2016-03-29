@@ -36,6 +36,10 @@ def new_eval_riesgo(request):
     form = EvalRiesgoForm()
     return render(request, "new_eval_riesgo.html", {"collapse_er": "in", "active_n": "active", "form": form})
 
+def list_eval_riesgo(request):
+    evaluaciones = evaluacion_riesgo.objects.all()
+    return render(request, {"evaluaciones": evaluaciones})
+
 def carga_friesgos(request):
     if request.method == "GET" and request.is_ajax():
         friesgo = list(factor_riesgo.objects.values('id', 'nombre'))
