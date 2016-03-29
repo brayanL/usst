@@ -12,7 +12,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="input-group">
-                                    <span class="input-group-addon">Localización</span>
+                                    <span class="input-group-addon">Localización *</span>
                                     {{ form.localizacion }}
                                     {{ form.localizacion.errors }}
                                 </div>
@@ -20,19 +20,19 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="input-group date">
-                                    <span class="input-group-addon">Fecha Evaluacion</span>
+                                    <span class="input-group-addon">Fecha Evaluacion *</span>
                                     {{ form.fecha_eval }}
                                     <span class="input-group-addon">
                                         <span class="glyphicon glyphicon-calendar"></span>
                                     </span>
                                 </div>
-                                {{ form.fecha_eval.errors }}
+{#                                {{ form.fecha_eval.errors }}#}
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="input-group">
-                                    <span class="input-group-addon">Puesto de Trabajo</span>
+                                    <span class="input-group-addon">Puesto de Trabajo *</span>
                                     {{ form.puesto }}
                                     {{ form.puesto.errors }}
                                 </div>
@@ -52,7 +52,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="input-group">
-                                    <span class="input-group-addon">N° de Trabajadores</span>
+                                    <span class="input-group-addon">N° de Trabajadores *</span>
                                     {{ form.trabajadores }}
                                     {{ form.trabajadores.errors }}
                                 </div>
@@ -63,7 +63,7 @@
                                         <span class="input-group-addon">Evaluacion</span>
                                         <span class="input-group-addon" style="background-color: white">Inicial</span>
                                         <span class="input-group-addon">
-                                            <input type="radio" name="rd_teval" value="inicial">
+                                            <input type="radio" name="rd_teval" value="inicial" checked>
                                         </span>
                                         <span class="input-group-addon" style="background-color: white">Periodica</span>
                                         <span class="input-group-addon">
@@ -264,7 +264,8 @@
             var consecuencia=$(this).val();
 
             if (probabilidad == "B" && consecuencia == "LD")
-                $("#er"+fila).find('option').remove().end().append(new Option("Riesgo Trivial","T")).css("background-color","#ffff99").css("color","black").css("text-align", "center");
+{#                $("#er"+fila).find('option').remove().end().append(new Option("Riesgo Trivial","T")).css("background-color","#ffff99").css("color","black").css("text-align", "center");#}
+                $("#er"+fila).append(new Option("Riesgo Trivial","T")).css("background-color","#ffff99").css("color","black").css("text-align", "center");
             if (probabilidad == "B" && consecuencia == "D")
                 $("#er"+fila).append(new Option("Riesgo Tolerable","TO")).css("background-color","#ffff00").css("color","black").css("text-align", "center");
             if (probabilidad == "B" && consecuencia == "ED")

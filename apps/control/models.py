@@ -13,9 +13,9 @@ class evaluacion_riesgo(models.Model):
     puesto = models.CharField(max_length=200)
     trabajadores = models.IntegerField()
     fecha_eval = models.DateField()
-    fecha_ul_eval = models.DateField()
+    fecha_ul_eval = models.DateField(null=True)
     usuario = models.ForeignKey(User)
-    evaluacion = models.BooleanField(default=False)
+    evaluacion = models.BooleanField()
 
 class peligro_detalle(models.Model):
     nombre = models.CharField(max_length=100)

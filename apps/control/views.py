@@ -16,17 +16,29 @@ def new_eval_riesgo(request):
         try:
             with transaction.atomic():
                 mfer = EvalRiesgoForm(request.POST)
+                if request.POST["fecha_ul_eval"] == "":
+                    del mfer.fields["fecha_ul_eval"]
                 if mfer.is_valid():
+                    #Para anular el guardado del ModelForm
                     er = mfer.save(commit=False)
                     er.usuario = User.objects.get(pk=request.user.id)
-                    er.evaluacion = True
+
+                    #Para asignar un valor a los radio button dependiendo de la opcion seleccionada
+                    #Inicial = True, Periodica = False
+                    if request.POST["rd_teval"] == "inicial":
+                        er.evaluacion = True
+                    else:
+                        er.evaluacion = False
                     er.save()
+
+                    #Para Guardar los peligros
+
+
+
                     messages.info(request, "Se ha guardado con éxito el nuevo registro.")
                     return redirect("/eval_riesgo/")
                 else:
                     messages.info(request, "Error al Guardar.")
-                #num_filas = request.POST['num_filas']
-
         except Exception as error:
             print(error)
             transaction.rollback()
