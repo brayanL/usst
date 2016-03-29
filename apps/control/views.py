@@ -38,7 +38,7 @@ def new_eval_riesgo(request):
 
 def list_eval_riesgo(request):
     evaluaciones = evaluacion_riesgo.objects.all()
-    return render(request, {"evaluaciones": evaluaciones})
+    return render(request, "list_eval_riesgo.html", {"evaluaciones": evaluaciones})
 
 def carga_friesgos(request):
     if request.method == "GET" and request.is_ajax():

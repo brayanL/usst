@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block titulo_pagina %}Lista Evaluacion de Riesgo{% endblock titulo_pagina %}
+{% block titulo %}Lista Evaluacion de Riesgo{% endblock titulo %}
+{% block contenido %}
+    <div class="col-lg-12">
+        <div class="panel panel-info">
+            <div class="panel-heading">Evaluaciones de Riesgo</div>
+            <div class="panel-body">
+                <div class="table-responsive form-inline">
+                    <table id="tb_evalriesgo" class="table table-bordered table-striped display table-color" aria-describedby="lista de evaluaciones">
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        var datos = [];
+        {% for eval in evaluaciones %}
+            datos.push(["{{ eval.id }}", "{{ eval.localizacion }}", "{{ eval.puesto }}", "{{ eval.trabajadores }}",
+                "{{ eval.fecha_eval }}", "{{ eval.fecha_ul_eval }}", "{{ eval.usuario }}", "{{ eval.evaluacion }}"]);
+        {% endfor %}
+        $(document).ready(function(){
+            $("#tb_evalriesgo").dataTable({
+                "data": datos,
+                "columns":[
+                    {"title": "ID"},
+                    {"title": "localizacion"},
+                    {"title": "puesto"},
+                    {"title": "trabajadores"},
+                    {"title": "fecha evaluacion"},
+                    {"title": "Fecha ultima"},
+                    {"title": "usuario"},
+                    {"title": "evalucion"},
+                ]
+            })});
+    </script>
+{% endblock contenido %}
