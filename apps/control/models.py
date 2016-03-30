@@ -23,6 +23,10 @@ class peligro_detalle(models.Model):
     def __str__(self):
         return "%s,%s" % (self.nombre,self.peligro)
 
+'''
+Una evaluacion de riesgo no puede tener dos peligros iguales, por tal razon
+evaluacion y peligro_det seran una llave compuesta
+'''
 class peligro_evaluacion(models.Model):
     evaluacion = models.ForeignKey(evaluacion_riesgo)
     peligro_det = models.ForeignKey(peligro_detalle)
@@ -39,6 +43,10 @@ class peligro_evaluacion(models.Model):
     )
     consecuencias = models.CharField(choices=TIPOS_CONSEC, max_length=2)
     estimacion = models.CharField(max_length=2)
+
+    class Meta:
+        unique_together = ('evaluacion', 'peligro_det')
+
 
 class medida_control(models.Model):
     usuario = models.ForeignKey(User)

@@ -4,11 +4,17 @@ from django.http import HttpResponse
 from django.db import transaction
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.db.models import Max
 from .forms import *
 from .models import factor_riesgo, evaluacion_riesgo, peligro_evaluacion
+from .colores import *
 
 # Create your views here.
-
+'''
+    1. Hacer con formularios normales a Evaluacion de Riesgo
+    2. Hacer el Guardado con Ajax en caso de problema la pagina no se recargue
+        y los datos queden en la tabla y en los inputs
+'''
 
 @login_required
 def new_eval_riesgo(request):
@@ -30,33 +36,54 @@ def new_eval_riesgo(request):
                     else:
                         er.evaluacion = False
                     er.save()
+                    eval_r = evaluacion_riesgo.objects.get(pk=(evaluacion_riesgo.objects.all().aggregate(Max('id'))).get('id__max'))
 
                     #Para Guardar los peligros
-
-
+                    num_filas = int(request.POST["num_filas"])
+                    for n in range(num_filas):
+                        peli = peligro_detalle.objects.get(pk=int(request.POST[('peli'+str(n+1))]))  # peligro identificado
+                        pro = request.POST[('pro'+str(n+1))]  # Probabilidad
+                        con = request.POST[('con'+str(n+1))]  # Consecuencia
+                        eri = request.POST[('er'+str(n+1))]  # Estimacion de Riesgo
+                        peligro_evaluacion.objects.create(evaluacion=eval_r, peligro_det=peli,
+                                                          probabilidad=pro, consecuencias=con,
+                                                          estimacion=eri)
 
                     messages.info(request, "Se ha guardado con éxito el nuevo registro.")
                     return redirect("/eval_riesgo/")
                 else:
-                    messages.info(request, "Error al Guardar.")
+                    messages.info(request, "Ingrese Datos Correctos.")
         except Exception as error:
-            print(error)
             transaction.rollback()
-            messages.error(request, ("Comuniquese con Soporte técnico. "+ str(error)))
-            print("Error: " + str(error))
-            return redirect('/eval_riesgo/')
+            messages.error(request, "Error en la transaccion: " + str(error))
+            print("Error: ", str(error))
+            #return redirect('/eval_riesgo/')
+            #return render(request.POST, "new_eval_riesgo.html")
     form = EvalRiesgoForm()
     return render(request, "new_eval_riesgo.html", {"collapse_er": "in", "active_n": "active", "form": form})
+
 
 def list_eval_riesgo(request):
     evaluaciones = evaluacion_riesgo.objects.all()
     return render(request, "list_eval_riesgo.html", {"evaluaciones": evaluaciones})
+
+'''
+    Para listar los peligros asociados a una evaluacion de riesgo especifica
+'''
+def view_edit_er(request, pk):
+    peligros_eval = peligro_evaluacion.objects.filter(evaluacion=pk)  # Para obtener todos los peligros asociados a una evaluacion
+    er = evaluacion_riesgo.objects.get(pk=pk)  # Para mostrar datos de la Evaluacion de Riesgos
+    c = colores()
+    #c.colores_tabla()
+    return render(request, "list_peligros_eval.html", {"peligros": peligros_eval, "id_er": pk, "er": er})
+
 
 def carga_friesgos(request):
     if request.method == "GET" and request.is_ajax():
         friesgo = list(factor_riesgo.objects.values('id', 'nombre'))
         #print(friesgo)
         return HttpResponse(json.dumps(friesgo), content_type='application/json')
+
 
 def carga_peligros(request):
     if request.method == "GET" and request.is_ajax():

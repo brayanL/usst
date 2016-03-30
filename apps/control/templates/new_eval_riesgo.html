@@ -26,7 +26,7 @@
                                         <span class="glyphicon glyphicon-calendar"></span>
                                     </span>
                                 </div>
-{#                                {{ form.fecha_eval.errors }}#}
+                                {{ form.fecha_eval.errors }}
                             </div>
                         </div>
                         <div class="row">
@@ -104,7 +104,7 @@
                             <tbody id="bd_fr"></tbody>
                         </table>
                         <!-- Para guardar la cantidad de filas que tiene la tabla -->
-                        <input type="hidden" id="num_filas" name="num_filas">
+                        <input type="hidden" id="id_num_filas" name="num_filas">
                     </div>
                 </div>
             </div>
@@ -141,7 +141,6 @@
                     }
                     agregar_filas();
                     cargar_friesgo();
-                    $("#num_filas").val(document.getElementById("bd_fr").rows.length);
                     //console.log(friesgo_list);
                 }
             });
@@ -155,9 +154,10 @@
         });
 
         //Para pintar la fila de un color
-        $("#tb_eval").on('click', 'tr', function(){
+        eventos_tabla($("#tb_eval"));
+        {% comment %}$("#tb_eval").on('click', 'tr', function(){
             $(this).addClass('highlight').siblings().removeClass('highlight');
-        });
+        });{% endcomment %}
 
         //Agregar nueva fila a la tabla e incrementa el acumulador para los ids
         $("#nuevo").click(function(){
@@ -165,7 +165,8 @@
             //$("#num_filas").val($("#tb_eval tbody>tr").length);
             agregar_filas();
             cargar_friesgo();
-            $("#num_filas").val(document.getElementById("bd_fr").rows.length);
+            //$("#id_num_filas").val(document.getElementById("bd_fr").rows.length);
+            $("#id_num_filas").val($("#tb_eval tbody>tr").length);
         });
 
         //Para eliminar la ultima fila de la tabla seleccionada
@@ -177,7 +178,7 @@
                 //decremento para que la nueva fila tenga los ids correctos
                 num-=1;
                 fila_ultima.remove();
-                $("#num_filas").val(document.getElementById("bd_fr").rows.length);
+                $("#id_num_filas").val(document.getElementById("bd_fr").rows.length);
             }
             else
                 $.notify("No puede eliminar la primera fila", { position:"top center", "className": "error"});
