@@ -93,12 +93,13 @@
                         <table id="tb_eval" class="table table-bordered table-color">
                             <thead>
                             <tr>
-                                <th>N°</th>
-                                <th>Factor Riesgo</th>
-                                <th>Peligro Identificado</th>
-                                <th>Probabilidad</th>
-                                <th>Consecuencia</th>
-                                <th>Estimación de Riesgo</th>
+                                <th class="col-xs-1" >N°</th>
+                                <th class="col-md-2" >Factor Riesgo</th>
+                                <th class="col-md-2" >Peligro Identificado</th>
+                                <th class="col-md-2" >Probabilidad</th>
+                                <th class="col-md-2" >Consecuencia</th>
+                                <th class="col-md-2" >Estimación de Riesgo</th>
+                                <th class="col-md-1" >Priorizacion</th>
                             </tr>
                             </thead>
                             <tbody id="bd_fr"></tbody>
@@ -130,6 +131,12 @@
 
         $(document).ready(function(){
             //Para cargar los factores de riesgo
+            // ->Una apeticion asincrona al servidor a traves de ajax se produce en un hilo
+            //   es decir que en segundo plano se estan realizando las tareas solicitadas
+            //   pero el programa sigue con la ejecucion secuencial del codigo.
+            // ->En este caso cuando se cargan los factores de riesgo en el select por primera vez
+            //   el script sigue con la ejecucion de las siguientes instrucciones independientemente
+            //   si ya devolvio una respuesta o no el servidor a la informacion solicitada.
             $.ajax({
                 dataType: "json",
                 contentType:"application/json; charset=utf-8",
@@ -141,10 +148,14 @@
                     }
                     agregar_filas();
                     cargar_friesgo();
-                    //console.log(friesgo_list);
+                    //console.log("Prueba1");
                 }
             });
         });
+
+         //Para pintar la fila de un color
+        eventos_tabla($("#tb_eval"));
+        //console.log("Prueba2");
 
         //Para obtener el id de la fila actual de la tabla
         $("#bd_fr").on('change', 'tr', function(){
@@ -153,8 +164,6 @@
             //console.log("Id Fila: "+fila);
         });
 
-        //Para pintar la fila de un color
-        eventos_tabla($("#tb_eval"));
         {% comment %}$("#tb_eval").on('click', 'tr', function(){
             $(this).addClass('highlight').siblings().removeClass('highlight');
         });{% endcomment %}
@@ -192,6 +201,7 @@
                     '<td><select class="form-control pro" name="pro'+num+'" id="sprob'+num+'" required></select></td>'+
                     '<td><select class="form-control con" name="con'+num+'" id="scon'+num+'" required></select></td>'+
                     '<td><select class="form-control" name="er'+num+'" id="er'+num+'" required readonly></select></td>'+
+                    '<td><input type="text" class="form-control" name="prio'+num+'" id="prio'+num+'" required readonly></td>'+
                     '</tr>'
             );
         }
@@ -221,7 +231,6 @@
                 success: function(response){
                     for(var i=0; i<response.length; i++){
                         $("#spi"+fila).append(new Option(response[i].nombre, response[i].id));
-                        console.log(response[i].nombre)
                     }
                 }
             });
@@ -264,25 +273,43 @@
 
             var consecuencia=$(this).val();
 
-            if (probabilidad == "B" && consecuencia == "LD")
-{#                $("#er"+fila).find('option').remove().end().append(new Option("Riesgo Trivial","T")).css("background-color","#ffff99").css("color","black").css("text-align", "center");#}
+            if (probabilidad == "B" && consecuencia == "LD"){
                 $("#er"+fila).append(new Option("Riesgo Trivial","T")).css("background-color","#ffff99").css("color","black").css("text-align", "center");
-            if (probabilidad == "B" && consecuencia == "D")
+                $("#prio"+fila).val("5");
+            }
+            if (probabilidad == "B" && consecuencia == "D"){
                 $("#er"+fila).append(new Option("Riesgo Tolerable","TO")).css("background-color","#ffff00").css("color","black").css("text-align", "center");
-            if (probabilidad == "B" && consecuencia == "ED")
+                $("#prio"+fila).val("4");
+            }
+            if (probabilidad == "B" && consecuencia == "ED"){
                 $("#er"+fila).append(new Option("Riesgo Moderado", "M")).css("background-color","#ff6666").css("color","black").css("text-align", "center");
-            if (probabilidad == "M" && consecuencia == "LD")
+                $("#prio"+fila).val("3");
+            }
+            if (probabilidad == "M" && consecuencia == "LD"){
                 $("#er"+fila).append(new Option("Riesgo Tolerable","TO")).css("background-color","#ffff00").css("color","black").css("text-align", "center");
+                $("#prio"+fila).val("4");
+            }
             if (probabilidad == "M" && consecuencia == "D")
+            {
                 $("#er"+fila).append(new Option("Riesgo Moderado", "M")).css("background-color","#ff6666").css("color","black").css("text-align", "center");
-            if (probabilidad == "M" && consecuencia == "ED")
+                $("#prio"+fila).val("3");
+            }
+            if (probabilidad == "M" && consecuencia == "ED"){
                 $("#er"+fila).append(new Option("Riesgo Importante", "I")).css("background-color","#c2c2d6").css("color","black").css("text-align", "center");
-            if (probabilidad == "A" && consecuencia == "LD")
+                $("#prio"+fila).val("2");
+            }
+            if (probabilidad == "A" && consecuencia == "LD"){
                 $("#er"+fila).append(new Option("Riesgo Moderado", "M")).css("background-color","#ff6666").css("color","black").css("text-align", "center");
-            if (probabilidad == "A" && consecuencia == "D")
+                $("#prio"+fila).val("3");
+            }
+            if (probabilidad == "A" && consecuencia == "D"){
                 $("#er"+fila).append(new Option("Riesgo Importante", "I")).css("background-color","#c2c2d6").css("color","black").css("text-align", "center");
-            if (probabilidad == "A" && consecuencia == "ED")
+                $("#prio"+fila).val("2");
+            }
+            if (probabilidad == "A" && consecuencia == "ED"){
                 $("#er"+fila).append(new Option("Riesgo Intolerable", "IN")).css("background-color","#ff0000").css("color","black").css("text-align", "center");
+                $("#prio"+fila).val("1");
+            }
         });
 
         $(function () {

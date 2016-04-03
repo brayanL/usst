@@ -20,7 +20,7 @@
     </div>
     <script type="text/javascript">
         var tabla = $("#tb_evalriesgo");
-        var detalle = $("#detalles_er")
+        var btn_detalle = $("#detalles_er")
         var datos = [];
         {% for eval in evaluaciones %}
             datos.push(["{{ eval.id }}", "{{ eval.localizacion }}", "{{ eval.puesto }}", "{{ eval.trabajadores }}",
@@ -41,7 +41,8 @@
                 ]
             })});
 
-        eventos_tabla(tabla, detalle);
+        eventos_tabla(tabla);
+        edicion_fila(btn_detalle);
 
     </script>
 {% endblock contenido %}

@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='evaluacion_riesgo',
             fields=[
-                ('id', models.AutoField(serialize=False, verbose_name='ID', primary_key=True, auto_created=True)),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('localizacion', models.CharField(max_length=200)),
                 ('puesto', models.CharField(max_length=200)),
                 ('trabajadores', models.IntegerField()),
@@ -28,14 +28,14 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='factor_riesgo',
             fields=[
-                ('id', models.AutoField(serialize=False, verbose_name='ID', primary_key=True, auto_created=True)),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('nombre', models.CharField(max_length=30)),
             ],
         ),
         migrations.CreateModel(
             name='medida_control',
             fields=[
-                ('id', models.AutoField(serialize=False, verbose_name='ID', primary_key=True, auto_created=True)),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('medida_control', models.CharField(max_length=100)),
                 ('procedimiento', models.CharField(max_length=100)),
                 ('informacion', models.CharField(max_length=100)),
@@ -46,18 +46,20 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='peligro_detalle',
             fields=[
-                ('id', models.AutoField(serialize=False, verbose_name='ID', primary_key=True, auto_created=True)),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('nombre', models.CharField(max_length=100)),
-                ('peligro', models.ForeignKey(to='control.factor_riesgo')),
+                ('factor_r', models.ForeignKey(to='control.factor_riesgo')),
             ],
         ),
         migrations.CreateModel(
             name='peligro_evaluacion',
             fields=[
-                ('id', models.AutoField(serialize=False, verbose_name='ID', primary_key=True, auto_created=True)),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('probabilidad', models.CharField(choices=[('B', 'Baja'), ('M', 'Mediana'), ('A', 'Alta')], max_length=1)),
                 ('consecuencias', models.CharField(choices=[('LD', 'Ligeramente Dañino'), ('D', 'Dañino'), ('ED', 'Extremandamente Dañino')], max_length=2)),
                 ('estimacion', models.CharField(max_length=2)),
+                ('priorizacion', models.CharField(max_length=3)),
+                ('orden', models.IntegerField()),
                 ('evaluacion', models.ForeignKey(to='control.evaluacion_riesgo')),
                 ('peligro_det', models.ForeignKey(to='control.peligro_detalle')),
             ],
@@ -65,10 +67,13 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='plan_accion',
             fields=[
-                ('id', models.AutoField(serialize=False, verbose_name='ID', primary_key=True, auto_created=True)),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('accion', models.CharField(max_length=100)),
                 ('responsable', models.CharField(max_length=50)),
-                ('finalizacion', models.DateField()),
+                ('fecha_finalizacion', models.DateField()),
+                ('fecha_firma', models.DateField()),
+                ('realizado_por', models.CharField(max_length=100)),
+                ('next_evaluacion', models.DateField()),
                 ('peligro_eval', models.ForeignKey(to='control.peligro_evaluacion')),
                 ('usuario', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
@@ -82,5 +87,9 @@ class Migration(migrations.Migration):
             model_name='medida_control',
             name='usuario',
             field=models.ForeignKey(to=settings.AUTH_USER_MODEL),
+        ),
+        migrations.AlterUniqueTogether(
+            name='peligro_evaluacion',
+            unique_together=set([('evaluacion', 'peligro_det')]),
         ),
     ]

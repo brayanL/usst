@@ -1,12 +1,21 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-# Create your models here.
+
 class factor_riesgo(models.Model):
     nombre = models.CharField(max_length=30)
 
     def __str__(self):
         return "%s" % (self.nombre)
+
+
+class peligro_detalle(models.Model):
+    nombre = models.CharField(max_length=100)
+    factor_r = models.ForeignKey(factor_riesgo)
+
+    def __str__(self):
+        return "%s,%s" % (self.nombre, self.factor_r)
+
 
 class evaluacion_riesgo(models.Model):
     localizacion = models.CharField(max_length=200)
@@ -16,12 +25,6 @@ class evaluacion_riesgo(models.Model):
     fecha_ul_eval = models.DateField(null=True)
     usuario = models.ForeignKey(User)
     evaluacion = models.BooleanField()
-
-class peligro_detalle(models.Model):
-    nombre = models.CharField(max_length=100)
-    peligro = models.ForeignKey(factor_riesgo)
-    def __str__(self):
-        return "%s,%s" % (self.nombre,self.peligro)
 
 '''
 Una evaluacion de riesgo no puede tener dos peligros iguales, por tal razon
@@ -43,6 +46,8 @@ class peligro_evaluacion(models.Model):
     )
     consecuencias = models.CharField(choices=TIPOS_CONSEC, max_length=2)
     estimacion = models.CharField(max_length=2)
+    priorizacion = models.CharField(max_length=3)  # Para indicar el nivel de riesgo
+    orden = models.IntegerField()  # Para llevar un orden seguimiento
 
     class Meta:
         unique_together = ('evaluacion', 'peligro_det')
@@ -62,4 +67,7 @@ class plan_accion(models.Model):
     peligro_eval = models.ForeignKey(peligro_evaluacion)
     accion = models.CharField(max_length=100)
     responsable = models.CharField(max_length=50)
-    finalizacion = models.DateField()
+    fecha_finalizacion = models.DateField()
+    fecha_firma = models.DateField()
+    realizado_por = models.CharField(max_length=100)
+    next_evaluacion = models.DateField()

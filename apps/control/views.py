@@ -45,9 +45,10 @@ def new_eval_riesgo(request):
                         pro = request.POST[('pro'+str(n+1))]  # Probabilidad
                         con = request.POST[('con'+str(n+1))]  # Consecuencia
                         eri = request.POST[('er'+str(n+1))]  # Estimacion de Riesgo
+                        prio = request.POST[('prio'+str(n+1))]  # Estimacion de Riesgo
                         peligro_evaluacion.objects.create(evaluacion=eval_r, peligro_det=peli,
                                                           probabilidad=pro, consecuencias=con,
-                                                          estimacion=eri)
+                                                          estimacion=eri, priorizacion=prio, orden=(n+1))
 
                     messages.info(request, "Se ha guardado con éxito el nuevo registro.")
                     return redirect("/eval_riesgo/")
@@ -74,8 +75,9 @@ def view_edit_er(request, pk):
     peligros_eval = peligro_evaluacion.objects.filter(evaluacion=pk)  # Para obtener todos los peligros asociados a una evaluacion
     er = evaluacion_riesgo.objects.get(pk=pk)  # Para mostrar datos de la Evaluacion de Riesgos
     c = colores()
-    #c.colores_tabla()
-    return render(request, "list_peligros_eval.html", {"peligros": peligros_eval, "id_er": pk, "er": er})
+    prob, con, est = c.colores_tabla()
+    return render(request, "list_peligros_eval.html", {"peligros": peligros_eval, "id_er": pk, "er": er,
+                                                       "prob": prob, "con": con, "est": est})
 
 
 def carga_friesgos(request):
@@ -87,8 +89,6 @@ def carga_friesgos(request):
 
 def carga_peligros(request):
     if request.method == "GET" and request.is_ajax():
-        peligroR = request.GET['id1']
-        print(peligroR)
-        fpeligro = list(peligro_detalle.objects.filter(peligro=factor_riesgo.objects.get(pk=peligroR)).values('id', 'nombre'))
-        print(fpeligro)
-        return HttpResponse(json.dumps(fpeligro), content_type='application/json')
+        factor_r = request.GET['id1']
+        peligros = list(peligro_detalle.objects.filter(factor_r=factor_riesgo.objects.get(pk=factor_r)).values('id', 'nombre'))
+        return HttpResponse(json.dumps(peligros), content_type='application/json')
