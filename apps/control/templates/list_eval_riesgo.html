@@ -24,25 +24,25 @@
         var datos = [];
         {% for eval in evaluaciones %}
             datos.push(["{{ eval.id }}", "{{ eval.localizacion }}", "{{ eval.puesto }}", "{{ eval.trabajadores }}",
-                "{{ eval.fecha_eval }}", "{{ eval.fecha_ul_eval }}", "{{ eval.usuario }}", "{{ eval.evaluacion }}"]);
+                "{{ eval.fecha_eval }}", "{% if eval.fecha_ul_eval %}{{ eval.fecha_ul_eval }}{% else %}-----{% endif %}", "{{ eval.usuario }}",
+                "{% if eval.evaluacion  %}Inicial{% else %}Periodica{% endif %}"]);
         {% endfor %}
         $(document).ready(function(){
             $("#tb_evalriesgo").dataTable({
                 "data": datos,
                 "columns":[
                     {"title": "ID"},
-                    {"title": "localizacion"},
-                    {"title": "puesto"},
-                    {"title": "trabajadores"},
-                    {"title": "fecha evaluacion"},
-                    {"title": "Fecha ultima"},
-                    {"title": "usuario"},
-                    {"title": "evalucion"},
+                    {"title": "Localizacion"},
+                    {"title": "Puesto"},
+                    {"title": "Trabajadores"},
+                    {"title": "Fecha Evaluacion"},
+                    {"title": "Fecha Ultima"},
+                    {"title": "Usuario"},
+                    {"title": "Evalucion"},
                 ]
             })});
 
-        eventos_tabla(tabla);
-        edicion_fila(btn_detalle);
+        eventos_tabla(tabla, btn_detalle);
 
     </script>
 {% endblock contenido %}

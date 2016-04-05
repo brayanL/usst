@@ -2,7 +2,7 @@ from django.forms import Form, CharField, TextInput, ModelForm, Select, DateInpu
 from .models import *
 class EvalRiesgoForm(ModelForm):
     class Meta:
-        model = evaluacion_riesgo
+        model = EvaluacionRiesgo
         exclude = ('usuario', 'evaluacion')
         widgets = {
             "localizacion": TextInput(attrs={"class": "form-control", "required": True}),

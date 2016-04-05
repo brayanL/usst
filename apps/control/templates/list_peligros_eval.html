@@ -34,29 +34,70 @@
     <script type="text/javascript">
 
         var datos = [];
-        {% for pe in peligros %}
-            datos.push(["{{ pe.peligro_det.peligro.nombre }}", "{{ pe.peligro_det.nombre }}",
-                "{{ pe.probabilidad }}", "{{ pe.consecuencias }}", "{{ pe.estimacion }}"]);
-        {% endfor %}
+        var probabilidad = [[],[],[]];
+        var consecuencia = [[],[],[]];
+        var estimacion = [[],[],[],[],[]];
+        console.log("Test1");
 
         $(document).ready(function(){
-            $("#tb_peligros").dataTable({
+            console.log("Test2");
+            obtiene_colores();
+        });
+
+        function obtiene_colores(){
+            $.ajax({
+                dataType: "json",
+                contentType:"application/json; charset=utf-8",
+                url: "/carga_colores/",
+                type: "get",
+                success: function(response){
+
+                    //Para llenar probabilidad y consecuencia
+                    for(var i=0; i<(response["colores"].length); i++){
+                        probabilidad[i][0]= response["colores"][0]["probabilidad"][i].abr;
+                        probabilidad[i][1]= response["colores"][0]["probabilidad"][i].nombre;
+                        probabilidad[i][2]= response["colores"][0]["probabilidad"][i].color;
+
+                        consecuencia[i][0]= response["colores"][1]["consecuencia"][i].abr;
+                        consecuencia[i][1]= response["colores"][1]["consecuencia"][i].nombre;
+                        consecuencia[i][2]= response["colores"][1]["consecuencia"][i].color;
+                    }
+
+                    //Para llenar estimacion
+                    for(var j=0; j< response["colores"][2]["estimacion"].length; j++){
+                        estimacion[j][0]= response["colores"][2]["estimacion"][j].abr;
+                        estimacion[j][1]= response["colores"][2]["estimacion"][j].nombre;
+                        estimacion[j][2]= response["colores"][2]["estimacion"][j].color;
+                    }
+                    carga_datos();
+                }
+            });
+        }
+
+        function carga_datos(){
+
+            {% for pe in peligros %}
+                datos.push(["{{ pe.orden }}","{{ pe.peligro_det.factor_r.nombre }}", "{{ pe.peligro_det.nombre }}",
+                    "{{ pe.probabilidad }}", "{{ pe.consecuencias }}", "{{ pe.estimacion }}", "{{ pe.priorizacion }}"]);
+            {% endfor %}
+
+            var tb_peligros = $("#tb_peligros").DataTable({
                 "data": datos,
                 "columns":[
+                    {"title": "N°"},
                     {"title": "Factor de Riesgo"},
                     {"title": "Peligro Identificado"},
                     {"title": "Probabilidad"},
                     {"title": "Consecuencia"},
                     {"title": "Estimacion de Riesgo"},
+                    {"title": "Priorizacion"}
                 ]
-            })
+            });
             establece_colores();
-        });
+        }
 
         function establece_colores(){
-            //for (var i=0; .length;)
 
-            //console.log("Probabilida: " + {{ prob }})
         }
     </script>
 {% endblock contenido %}

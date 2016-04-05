@@ -126,8 +126,10 @@
                                     <a class="{{ active_n }}" href="{% url 'control_app:new_eval_riesgo' %}">Nuevo</a>
                                 </li>
                                 <li>
-                                    <a href="{% url 'control_app:evaluciones' %}">Listar</a>
-                                    <!--<a href="control_app:evalucion">Listar</a-->
+                                    <a href="{% url 'control_app:evaluciones' %}">Evaluaciones</a>
+                                </li>
+                                <li>
+                                    <a href="#">Evaluaciones Pendientes <span id="bg_ep" class="badge">0</span></a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->
@@ -136,28 +138,10 @@
                             <a href="#"><i class="fa fa-sitemap fa-fw"></i> Medida de Control<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="#">Second Level Item</a>
+                                    <a href="#">Medidas</a>
                                 </li>
                                 <li>
-                                    <a href="#">Second Level Item</a>
-                                </li>
-                                <li>
-                                    <a href="#">Third Level <span class="fa arrow"></span></a>
-                                    <ul class="nav nav-third-level">
-                                        <li>
-                                            <a href="#">Third Level Item</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Third Level Item</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Third Level Item</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Third Level Item</a>
-                                        </li>
-                                    </ul>
-                                    <!-- /.nav-third-level -->
+                                    <a href="#">Medidas Pendientes <span class="badge">0</span></a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->
@@ -166,10 +150,7 @@
                             <a href="#"><i class="fa fa-files-o fa-fw"></i> Plan de Accion<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="blank.html">Blank Page</a>
-                                </li>
-                                <li>
-                                    <a href="login.html">Login Page</a>
+                                    <a href="#">Planes</a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->
@@ -202,7 +183,22 @@
         {% for message in messages %}
             $.notify("{{ message }}", { position:"top center", "className": "{{ message.tags }}"});
         {% endfor %}
+
+        num_eval_pendientes();
     });
+
+    function num_eval_pendientes(){
+        $.ajax({
+            dataType: "json",
+            contentType:"application/json; charset=utf-8",
+            url: "/eval_pendientes/",
+            type: "get",
+            success: function(response){
+                $("#bg_ep").text(response);
+                //console.log("Pendientes: ",response);
+            }
+        });
+    }
 </script>
 
 </body>
