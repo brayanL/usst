@@ -133,6 +133,33 @@ def eval_pendientes(request):
 
 
 def new_medida_control(request, pk):
+    if request.method == "POST":
+        try:
+            with transaction.atomic():
+                num = int(request.POST['num_filas'])
+                usuario = User.objects.get(pk=request.user.id)
+                for i in range(num):
+                    id_pe = request.POST['id_pe'+str(i)]
+                    id_pe = PeligroEvaluacion.objects.get(pk=id_pe)
+                    mc = request.POST['mc'+str(i)]
+                    proc = request.POST['proc'+str(i)]
+                    inf = request.POST['inf'+str(i)]
+                    forma = request.POST['forma'+str(i)]
+                    rc = request.POST['rc'+str(i)]
+                    if rc == "S":
+                        rc = True
+                    else:
+                        rc = False
+
+                    MedidaControl.objects.filter(peligro_eval=id_pe).update(
+                        usuario=usuario, medida_control=mc, procedimiento=proc, informacion=inf,
+                        formacion=forma, riesgo_controlado=rc)
+                messages.info(request, "Se ha guardado con éxito el nuevo registro.")
+                return redirect("/eval_pendientes/")
+        except Exception as error:
+            transaction.rollback()
+            messages.error(request, "Error en la transaccion: " + str(error))
+            print("Error: ", str(error))
     er = EvaluacionRiesgo.objects.get(pk=pk)
     return render(request, "medidas/new_medida_control.html", {"er": er})
 
