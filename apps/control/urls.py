@@ -11,6 +11,12 @@ urlpatterns = [
 
     url(r'^carga_colores/$', carga_colores, name="carga_colores"),
 
-    url(r'^eval_pendientes/$', eval_pendientes, name="eval_pendientes")
+    url(r'^total_eval_pendientes/$', total_eval_pendientes, name="teval_pendientes"),
+
+    url(r'^eval_pendientes/$', eval_pendientes, name="eval_pendientes"),
+
+    url(r'^medida_control/(?P<pk>\d+)/$', new_medida_control, name="new_medida_control"),
+
+    url(r'^peligros_mc/$', peligros_medida_control, name="peligros_mc")
 ]
 

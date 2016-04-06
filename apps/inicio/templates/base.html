@@ -129,7 +129,7 @@
                                     <a href="{% url 'control_app:evaluciones' %}">Evaluaciones</a>
                                 </li>
                                 <li>
-                                    <a href="#">Evaluaciones Pendientes <span id="bg_ep" class="badge">0</span></a>
+                                    <a href="{% url 'control_app:eval_pendientes' %}">Evaluaciones Pendientes <span id="bg_ep" class="badge">0</span></a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->
@@ -191,15 +191,13 @@
         $.ajax({
             dataType: "json",
             contentType:"application/json; charset=utf-8",
-            url: "/eval_pendientes/",
+            url: "/total_eval_pendientes/",
             type: "get",
             success: function(response){
                 $("#bg_ep").text(response);
-                //console.log("Pendientes: ",response);
             }
         });
     }
 </script>
-
 </body>
 </html>

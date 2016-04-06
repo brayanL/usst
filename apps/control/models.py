@@ -60,8 +60,8 @@ class PeligroEvaluacion(models.Model):
     estimacion = models.CharField(max_length=2)
     priorizacion = models.CharField(max_length=3)  # Para indicar el nivel de riesgo
     orden = models.IntegerField()  # Para llevar un orden seguimiento
-    realizo_medida = models.BooleanField(default=False)
-    realizo_plan = models.BooleanField(default=False)
+    realizo_medida = models.NullBooleanField(null=True)
+    realizo_plan = models.NullBooleanField(null=True)
 
     class Meta:
         db_table = 'peligro_evaluacion'

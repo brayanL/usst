@@ -47,13 +47,17 @@ def new_eval_riesgo(request):
                         con = request.POST[('con'+str(n+1))]  # Consecuencia
                         eri = request.POST[('er'+str(n+1))]  # Estimacion de Riesgo
                         prio = request.POST[('prio'+str(n+1))]  # Estimacion de Riesgo
-                        pe_ev = PeligroEvaluacion.objects.create(evaluacion=eval_r, peligro_det=peli,
-                                                          probabilidad=pro, consecuencias=con,
-                                                          estimacion=eri, priorizacion=prio, orden=(n+1))
 
-                        # Si priorizacion esta en el rango del 1-3 pasar peligros a medidas de control
                         if prio == "1" or prio == "2" or prio == "3":
+                            pe_ev = PeligroEvaluacion.objects.create(evaluacion=eval_r, peligro_det=peli,
+                                                              probabilidad=pro, consecuencias=con,
+                                                              estimacion=eri, priorizacion=prio, orden=(n+1), realizo_medida=False)
+                            # Si priorizacion esta en el rango del 1-3 pasar peligros a medidas de control
                             MedidaControl.objects.create(usuario=usuario, peligro_eval=pe_ev)
+                        else:
+                            pe_ev = PeligroEvaluacion.objects.create(evaluacion=eval_r, peligro_det=peli,
+                                                              probabilidad=pro, consecuencias=con,
+                                                              estimacion=eri, priorizacion=prio, orden=(n+1))
 
                     messages.info(request, "Se ha guardado con éxito el nuevo registro.")
                     return redirect("/eval_riesgo/")
@@ -66,12 +70,13 @@ def new_eval_riesgo(request):
             #return redirect('/eval_riesgo/')
             #return render(request.POST, "new_eval_riesgo.html")
     form = EvalRiesgoForm()
-    return render(request, "new_eval_riesgo.html", {"collapse_er": "in", "active_n": "active", "form": form})
+    return render(request, "evaluaciones/new_eval_riesgo.html", {"collapse_er": "in", "active_n": "active", "form": form})
 
 
 def list_eval_riesgo(request):
     evaluaciones = EvaluacionRiesgo.objects.all()
-    return render(request, "list_eval_riesgo.html", {"evaluaciones": evaluaciones})
+    print(evaluaciones)
+    return render(request, "evaluaciones/list_eval_riesgo.html", {"evaluaciones": evaluaciones})
 
 '''
     Para listar los peligros asociados a una evaluacion de riesgo especifica
@@ -80,7 +85,7 @@ def view_edit_peligros_er(request, pk):
     peligros_eval = PeligroEvaluacion.objects.filter(evaluacion=pk)  # Para obtener todos los peligros asociados a una evaluacion
     er = EvaluacionRiesgo.objects.get(pk=pk)  # Para mostrar datos de la Evaluacion de Riesgos
 
-    return render(request, "list_peligros_eval.html", {"peligros": peligros_eval, "id_er": pk, "er": er})
+    return render(request, "evaluaciones/list_peligros_eval.html", {"peligros": peligros_eval, "id_er": pk, "er": er})
 
 
 #Para obtener los colores
@@ -105,7 +110,36 @@ def carga_peligros(request):
 
 
 # Determinar cuantas evaluaciones tienen medidas de control por realizar
-def eval_pendientes(request):
+def total_eval_pendientes(request):
     if request.method == "GET" and request.is_ajax():
         eval_r = PeligroEvaluacion.objects.filter(realizo_medida=False).values('evaluacion').distinct().count()
         return HttpResponse(json.dumps(eval_r), content_type='application/json')
+
+def eval_pendientes(request):
+    #id de evaluaciones pendientes
+    # Obtengo todos los peligros de una evaluacion especifica
+    #peligros = EvaluacionRiesgo.objects.get(pk=id_ev).peligroevaluacion_set.all()
+    evaluacion = []
+    ev_id = PeligroEvaluacion.objects.filter(realizo_medida=False).values('evaluacion').distinct()
+
+    list_ev = [ev['evaluacion'] for ev in ev_id]
+
+    for eva in list_ev:
+        evaluacion.append(EvaluacionRiesgo.objects.get(pk=eva))
+        print("Id de eva: ", eva)
+
+    #ev_pen = PeligroEvaluacion.objects.filter(realizo_medida=False).distinct()
+    return render(request, "evaluaciones/list_eval_pendientes.html", {"evaluaciones": evaluacion})
+
+
+def new_medida_control(request, pk):
+    er = EvaluacionRiesgo.objects.get(pk=pk)
+    return render(request, "medidas/new_medida_control.html", {"er": er})
+
+def peligros_medida_control(request):
+    if request.method == "GET" and request.is_ajax():
+        print("Entro")
+        id_er = request.GET['id_er']
+        peligros = list(PeligroEvaluacion.objects.filter(realizo_medida=False, evaluacion=id_er).values(
+            'id', 'peligro_det__nombre', 'peligro_det__factor_r__nombre'))
+        return HttpResponse(json.dumps(peligros), content_type='application/json')
