@@ -40,6 +40,13 @@
             </div>
         </div>
     </div>
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="pull-right">
+                <button class="btn btn-primary"><i class="fa fa-floppy-o"></i> Guardar</button>
+            </div>
+        </div>
+    </div>
     <script type="text/javascript">
         var id_er = {{ er.id }}
         $(document).ready(function(){
@@ -50,10 +57,26 @@
                 url: "/peligros_mc/",
                 type: "get",
                 success: function(response){
-                    console.log(response);
-
+                    agregar_filas(response)
                 }
             });
+
+            function agregar_filas(pe){
+                //console.log(response[0].id,response[1].id);
+                for(var i=0; i<pe.length; i++){
+                    $("#tb_mcontrol tbody").append(
+                            '<tr>' +
+                                '<td>'+pe[i].orden+'</td>'+
+                                '<td>'+pe[i].peligro_det__factor_r__nombre+'('+pe[i].peligro_det__nombre+')</td>'+
+                                '<td><input type="text" class="form-control" required></td>'+
+                                '<td><input type="text" class="form-control" required></td>'+
+                                '<td><input type="text" class="form-control" required></td>'+
+                                '<td><input type="text" class="form-control" required></td>'+
+                                '<td><input type="checkbox" class="form-control" required></td>'+
+                            '</tr>'
+                    );
+                }
+            }
         });
     </script>
 {% endblock contenido %}

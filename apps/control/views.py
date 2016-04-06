@@ -138,8 +138,7 @@ def new_medida_control(request, pk):
 
 def peligros_medida_control(request):
     if request.method == "GET" and request.is_ajax():
-        print("Entro")
         id_er = request.GET['id_er']
         peligros = list(PeligroEvaluacion.objects.filter(realizo_medida=False, evaluacion=id_er).values(
-            'id', 'peligro_det__nombre', 'peligro_det__factor_r__nombre'))
+            'id','orden', 'peligro_det__nombre', 'peligro_det__factor_r__nombre'))
         return HttpResponse(json.dumps(peligros), content_type='application/json')
