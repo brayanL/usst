@@ -139,8 +139,8 @@ def new_medida_control(request, pk):
                 num = int(request.POST['num_filas'])
                 usuario = User.objects.get(pk=request.user.id)
                 for i in range(num):
-                    id_pe = request.POST['id_pe'+str(i)]
-                    id_pe = PeligroEvaluacion.objects.get(pk=id_pe)
+                    pe = request.POST['id_pe'+str(i)]
+                    pe = PeligroEvaluacion.objects.get(pk=pe)
                     mc = request.POST['mc'+str(i)]
                     proc = request.POST['proc'+str(i)]
                     inf = request.POST['inf'+str(i)]
@@ -151,9 +151,19 @@ def new_medida_control(request, pk):
                     else:
                         rc = False
 
-                    MedidaControl.objects.filter(peligro_eval=id_pe).update(
+                    # Actualiza Medida de Control para un peligro en especifico
+                    MedidaControl.objects.filter(peligro_eval=pe).update(
                         usuario=usuario, medida_control=mc, procedimiento=proc, informacion=inf,
                         formacion=forma, riesgo_controlado=rc)
+
+                    # Actualiza el estado del peligro en PeligroEvaluacion
+                    PeligroEvaluacion.objects.filter(pk=pe.id).update(realizo_medida=True)
+
+                    # Si el riesgo no es controlado pasa a la Plan de Accion
+                    if rc is not True:
+                        PlanAccion.objects.create(usuario=usuario, peligro_eval=pe)
+                        PeligroEvaluacion.objects.filter(pk=pe.id).update(realizo_plan=False)
+
                 messages.info(request, "Se ha guardado con éxito el nuevo registro.")
                 return redirect("/eval_pendientes/")
         except Exception as error:
@@ -163,9 +173,32 @@ def new_medida_control(request, pk):
     er = EvaluacionRiesgo.objects.get(pk=pk)
     return render(request, "medidas/new_medida_control.html", {"er": er})
 
+
+# Para cargar los peligros que no se han realizado medidas de control para una evaluacion de riesgo especifica
 def peligros_medida_control(request):
     if request.method == "GET" and request.is_ajax():
         id_er = request.GET['id_er']
         peligros = list(PeligroEvaluacion.objects.filter(realizo_medida=False, evaluacion=id_er).values(
             'id','orden', 'peligro_det__nombre', 'peligro_det__factor_r__nombre'))
         return HttpResponse(json.dumps(peligros), content_type='application/json')
+
+
+# Determinar cuantas evaluaciones tienen planes de accion por realizar
+def total_medidas_pendientes(request):
+    if request.method == "GET" and request.is_ajax():
+        eval_r = PeligroEvaluacion.objects.filter(realizo_plan=False).values('evaluacion').distinct().count()
+        return HttpResponse(json.dumps(eval_r), content_type='application/json')
+
+
+def list_medidas(request, pk):
+    if PeligroEvaluacion.objects.filter(evaluacion=pk, realizo_medida=True).exists():
+        print("Hace Algo")
+    else:
+        return redirect()
+
+
+def list_planes(request, pk):
+    if PeligroEvaluacion.objects.filter(evaluacion=pk, realizo_plan=True).exists():
+        print("Hace Algo")
+    else:
+        return redirect()

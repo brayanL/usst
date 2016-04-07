@@ -141,7 +141,7 @@
                                     <a href="#">Medidas</a>
                                 </li>
                                 <li>
-                                    <a href="#">Medidas Pendientes <span class="badge">0</span></a>
+                                    <a href="#">Medidas Pendientes <span id="bg_mp" class="badge">0</span></a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->
@@ -185,6 +185,7 @@
         {% endfor %}
 
         num_eval_pendientes();
+        num_medidas_pendientes();
     });
 
     function num_eval_pendientes(){
@@ -195,6 +196,18 @@
             type: "get",
             success: function(response){
                 $("#bg_ep").text(response);
+            }
+        });
+    }
+
+    function num_medidas_pendientes(){
+        $.ajax({
+            dataType: "json",
+            contentType:"application/json; charset=utf-8",
+            url: "/total_medidas_pendientes/",
+            type: "get",
+            success: function(response){
+                $("#bg_mp").text(response);
             }
         });
     }

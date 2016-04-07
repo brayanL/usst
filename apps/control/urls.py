@@ -17,6 +17,9 @@ urlpatterns = [
 
     url(r'^medida_control/(?P<pk>\d+)/$', new_medida_control, name="new_medida_control"),
 
-    url(r'^peligros_mc/$', peligros_medida_control, name="peligros_mc")
+    url(r'^peligros_mc/$', peligros_medida_control, name="peligros_mc"),
+
+    url(r'^total_medidas_pendientes/$', total_medidas_pendientes, name="tmed_pendientes"),
+
 ]
 
