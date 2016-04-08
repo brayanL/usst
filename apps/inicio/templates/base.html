@@ -88,7 +88,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="{% url 'inicio_app:index' %}">SB Admin v2.0</a>
+                <a class="navbar-brand" href="{% url 'inicio_app:index' %}">USST</a>
             </div>
             <!-- /.navbar-header -->
 
@@ -126,7 +126,7 @@
                                     <a class="{{ active_n }}" href="{% url 'control_app:new_eval_riesgo' %}">Nuevo</a>
                                 </li>
                                 <li>
-                                    <a href="{% url 'control_app:evaluciones' %}">Evaluaciones</a>
+                                    <a href="/list_evaluaciones/t/">Evaluaciones</a>
                                 </li>
                                 <li>
                                     <a href="{% url 'control_app:eval_pendientes' %}">Evaluaciones Pendientes <span id="bg_ep" class="badge">0</span></a>
@@ -137,9 +137,6 @@
                         <li>
                             <a href="#"><i class="fa fa-sitemap fa-fw"></i> Medida de Control<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
-                                <li>
-                                    <a href="#">Medidas</a>
-                                </li>
                                 <li>
                                     <a href="#">Medidas Pendientes <span id="bg_mp" class="badge">0</span></a>
                                 </li>
@@ -164,8 +161,12 @@
 
         <div id="page-wrapper">
             <div class="row">
-                <div class="col-lg-12">
-                    <h1 class="page-header">{% block titulo %} {% endblock titulo %}</h1>
+                <div class="col-lg-9">
+                    <h1 class="page-header">{% block titulo %} {% endblock titulo %}
+                    </h1>
+                </div>
+                <div class="col-lg-3">
+                    {% block extras %}{% endblock extras %}
                 </div>
                 <!-- /.col-lg-12 -->
             </div>

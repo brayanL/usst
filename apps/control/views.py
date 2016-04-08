@@ -73,10 +73,12 @@ def new_eval_riesgo(request):
     return render(request, "evaluaciones/new_eval_riesgo.html", {"collapse_er": "in", "active_n": "active", "form": form})
 
 
-def list_eval_riesgo(request):
-    evaluaciones = EvaluacionRiesgo.objects.all()
-    print(evaluaciones)
-    return render(request, "evaluaciones/list_eval_riesgo.html", {"evaluaciones": evaluaciones})
+# todo -> con el simbolo - en order by los registros son ordenados de manera descendente
+def list_eval_riesgo(request, op="t"):
+    if request.method == "GET":
+        evaluaciones = EvaluacionRiesgo.objects.all().order_by('-id')
+        print(evaluaciones)
+        return render(request, "evaluaciones/list_eval_riesgo.html", {"evaluaciones": evaluaciones})
 
 '''
     Para listar los peligros asociados a una evaluacion de riesgo especifica
@@ -183,7 +185,7 @@ def peligros_medida_control(request):
         return HttpResponse(json.dumps(peligros), content_type='application/json')
 
 
-# Determinar cuantas evaluaciones tienen planes de accion por realizar
+# todo - Determinar cuantas evaluaciones tienen planes de accion por realizar
 def total_medidas_pendientes(request):
     if request.method == "GET" and request.is_ajax():
         eval_r = PeligroEvaluacion.objects.filter(realizo_plan=False).values('evaluacion').distinct().count()
