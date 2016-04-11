@@ -74,11 +74,26 @@ def new_eval_riesgo(request):
 
 
 # todo -> con el simbolo - en order by los registros son ordenados de manera descendente
-def list_eval_riesgo(request, op="t"):
+def list_eval_riesgo(request, op):
     if request.method == "GET":
-        evaluaciones = EvaluacionRiesgo.objects.all().order_by('-id')
-        print(evaluaciones)
-        return render(request, "evaluaciones/list_eval_riesgo.html", {"evaluaciones": evaluaciones})
+        if op == "t":
+            evaluaciones = EvaluacionRiesgo.objects.all().order_by('-id')
+            print(evaluaciones)
+            return render(request, "evaluaciones/list_eval_riesgo.html", {"evaluaciones": evaluaciones, "selec": "T"})
+        if op == "m":
+            evaluaciones = []
+            ev = PeligroEvaluacion.objects.filter(realizo_medida=True).values('evaluacion').distinct()
+            list_ev = [e['evaluacion'] for e in ev]
+            for e in list_ev:
+                evaluaciones.append(EvaluacionRiesgo.objects.get(pk=e))
+            return render(request, "evaluaciones/list_eval_riesgo.html", {"evaluaciones": evaluaciones, "selec": "M"})
+        if op == "p":
+            evaluaciones = []
+            ev = PeligroEvaluacion.objects.filter(realizo_plan=True).values('evaluacion').distinct()
+            list_ev = [e['evaluacion'] for e in ev]
+            for e in list_ev:
+                evaluaciones.append(EvaluacionRiesgo.objects.get(pk=e))
+            return render(request, "evaluaciones/list_eval_riesgo.html", {"evaluaciones": evaluaciones, "selec": "P"})
 
 '''
     Para listar los peligros asociados a una evaluacion de riesgo especifica
@@ -128,7 +143,6 @@ def eval_pendientes(request):
 
     for eva in list_ev:
         evaluacion.append(EvaluacionRiesgo.objects.get(pk=eva))
-        print("Id de eva: ", eva)
 
     #ev_pen = PeligroEvaluacion.objects.filter(realizo_medida=False).distinct()
     return render(request, "evaluaciones/list_eval_pendientes.html", {"evaluaciones": evaluacion})
@@ -176,7 +190,7 @@ def new_medida_control(request, pk):
     return render(request, "medidas/new_medida_control.html", {"er": er})
 
 
-# Para cargar los peligros que no se han realizado medidas de control para una evaluacion de riesgo especifica
+# todo - Para cargar los peligros que no se han realizado medidas de control para una evaluacion de riesgo especifica
 def peligros_medida_control(request):
     if request.method == "GET" and request.is_ajax():
         id_er = request.GET['id_er']
@@ -192,15 +206,26 @@ def total_medidas_pendientes(request):
         return HttpResponse(json.dumps(eval_r), content_type='application/json')
 
 
-def list_medidas(request, pk):
-    if PeligroEvaluacion.objects.filter(evaluacion=pk, realizo_medida=True).exists():
-        print("Hace Algo")
-    else:
-        return redirect()
+# todo - para poder listar las evaluaciones de riesgo que tienen planes de accion por realizar
+def medidas_pendientes(request):
+    evaluacion = []
+    ev_id = PeligroEvaluacion.objects.filter(realizo_plan=False).values('evaluacion').distinct()
+
+    list_ev = [ev['evaluacion'] for ev in ev_id]
+
+    for eva in list_ev:
+        evaluacion.append(EvaluacionRiesgo.objects.get(pk=eva))
+    return render(request, "medidas/list_medida_control.html", {"evaluaciones": evaluacion})
 
 
-def list_planes(request, pk):
-    if PeligroEvaluacion.objects.filter(evaluacion=pk, realizo_plan=True).exists():
-        print("Hace Algo")
-    else:
-        return redirect()
+def new_plan_accion(request, pk):
+    er = EvaluacionRiesgo.objects.get(pk=pk)
+    return render(request, "medidas/new_plan_accion.html", {"er": er})
+
+
+def peligros_plan_accion(request):
+    if request.method == "GET" and request.is_ajax():
+        id_er = request.GET['id_er']
+        peligros = list(PeligroEvaluacion.objects.filter(realizo_plan=False, evaluacion=id_er).values(
+            'id','orden', 'peligro_det__nombre', 'peligro_det__factor_r__nombre'))
+        return HttpResponse(json.dumps(peligros), content_type='application/json')

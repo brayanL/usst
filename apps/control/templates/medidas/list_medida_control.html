@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block titulo_pagina %}Medidas de Control Pendientes{% endblock titulo_pagina %}
+{% block titulo %}Medidas de Control Pendientes{% endblock titulo %}
+{% block contenido %}
+    <div class="col-lg-12">
+        <div class="panel panel-danger">
+            <div class="panel-heading">Evaluaciones de Riesgo
+                <div class="pull-right">
+                    <a id="crear_pa" class="btn btn-success btn-xs"><i class="fa fa-plus-circle"></i> Crear Plan de Accion</a>
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="table-responsive form-inline">
+                    <table id="tb_mp" class="table table-bordered table-striped display table-color" aria-describedby="lista de medidas pendientes">
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        var datos = [];
+        var id = 0;
+        var tabla = $("#tb_mp");
+        var btn_mc = $("#crear_pa");
+        {% for eval in evaluaciones %}
+            datos.push(["{{ eval.id }}", "{{ eval.localizacion }}", "{{ eval.puesto }}", "{{ eval.trabajadores }}",
+                "{{ eval.fecha_eval }}", "{% if eval.fecha_ul_eval %}{{ eval.fecha_ul_eval }}{% else %}-----{% endif %}", "{{ eval.usuario }}",
+                "{% if eval.evaluacion  %}Inicial{% else %}Periodica{% endif %}"]);
+        {% endfor %}
+
+        $(document).ready(function(){
+            $("#tb_mp").dataTable({
+                "data": datos,
+                "columns":[
+                    {"title": "ID"},
+                    {"title": "Localizacion"},
+                    {"title": "Puesto"},
+                    {"title": "Trabajadores"},
+                    {"title": "Fecha Evaluacion"},
+                    {"title": "Fecha Ultima"},
+                    {"title": "Usuario"},
+                    {"title": "Evalucion"},
+                ]
+            })});
+
+        tabla.on('click', 'tr', function(){
+            var $td = $(this).closest('tr').children('td');
+            id = $td.eq(0).text();
+
+            $(this).addClass('highlight').siblings().removeClass('highlight');
+            btn_mc.prop("href", "/nuevo_plan_accion/"+id+"/");
+        });
+    </script>
+{% endblock contenido %}

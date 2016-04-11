@@ -4,16 +4,14 @@
 {% block extras %}
     <div class="page-header">
         <div class="input-group">
+            <form id="form_lista" method="get">{% csrf_token %}
+            </form>
             <span class="input-group-addon">Opciones</span>
             <select class="form-control" name="" id="selec_op">
-                <option value=""></option>
                 <option value="M">Medidas</option>
                 <option value="P">Planes</option>
                 <option value="T">Todos</option>
             </select>
-            <span class="input-group-btn">
-                <a id="btn_ver" class="btn btn-default"><i class="fa fa-eye"></i> Ver</a>
-            </span>
         </div>
     </div>
 {% endblock extras %}
@@ -22,8 +20,6 @@
         <div class="panel panel-info">
             <div class="panel-heading">Evaluaciones de Riesgo
                 <div class="pull-right">
-                    {% comment %}<a id="planes" class="btn btn-primary btn-xs"><i class="fa fa-list-alt"></i> Planes</a>
-                    <a id="medidas" class="btn btn-warning btn-xs"><i class="fa fa-list-alt"></i> Medidas</a>{% endcomment %}
                     <a id="detalles_er" class="btn btn-success btn-xs"><i class="fa fa-list-alt"></i> Detalles</a>
                 </div>
             </div>
@@ -39,8 +35,10 @@
     <script type="text/javascript">
         var tabla = $("#tb_evalriesgo");
         var btn_detalle = $("#detalles_er");
-        var btn_ver = $("#btn_ver");
+        var selec_op = $("#selec_op");
+        var opcion = $("#selec_op option:selected").val();
         var id;
+        var formulario = $("#form_lista");
         var datos = [];
         {% for eval in evaluaciones %}
             datos.push(["{{ eval.id }}", "{{ eval.localizacion }}", "{{ eval.puesto }}", "{{ eval.trabajadores }}",
@@ -61,7 +59,9 @@
                     {"title": "Usuario"},
                     {"title": "Evalucion"},
                 ]
-            })});
+            })
+            selec_op.val("{{ selec }}");
+        });
 
         tabla.on('click', 'tr', function(){
             var $td = $(this).closest('tr').children('td');
@@ -71,6 +71,12 @@
 
             btn_detalle.prop("href","/list_evaluaciones/det/"+id+ "/");
 
+            if(opcion == "M"){
+                btn_ver.prop("href",id);
+            }
+            if(opcion == "P"){
+                btn_ver.prop("href",id);
+            }
         });
 
         $(document).on("change", "#selec_op", function(){
@@ -78,11 +84,29 @@
             //Get Value option selected
             var select = $(this).val();
             if(select == "M"){
-                //manda a cargar las evaluaciones con medidas de control
-
-                //btn_ver.prop("href","/list_evaluaciones/m/"+id+"/");
+                formulario.prop("action","{% url 'control_app:list_evaluciones' "m" %}");
+                formulario.submit();
+            }
+            if(select == "P"){
+                formulario.prop("action","{% url 'control_app:list_evaluciones' "p" %}");
+                formulario.submit();
+            }
+            if(select == "T"){
+                formulario.prop("action","{% url 'control_app:list_evaluciones' "t" %}");
+                formulario.submit();
             }
         });
 
+        {% comment %}btn_ver.click(function(){
+            //Se debe seleccionar una fila de la tabla y una opcion en el
+            // select para poder ejecutar la accion
+            if(btn_ver.prop("href")){
+                if(opcion == "M"){
+                }
+            }
+            else{
+                $.notify("Debe Seleccionar una Fila y la opcion seleccionada debe ser Medida o Plan", { position:"top center", "className": "error"});
+            }
+        });{% endcomment %}
     </script>
 {% endblock contenido %}
