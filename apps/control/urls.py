@@ -7,7 +7,7 @@ urlpatterns = [
     url(r'^carga_peligros/$', carga_peligros, name='carga_peligros'),
 
     url(r'^list_evaluaciones/(?P<op>\w)/$', list_eval_riesgo, name="list_evaluciones"),
-    url(r'^list_evaluaciones/det/(?P<pk>\d+)/$', view_edit_peligros_er, name="edit_er"),
+    url(r'^list_evaluaciones/det/(?P<pk>\d+)/$', det_eval_riesgo, name="det_eval_riesgo"),
 
     url(r'^carga_colores/$', carga_colores, name="carga_colores"),
 
@@ -25,6 +25,12 @@ urlpatterns = [
 
     url(r'^nuevo_plan_accion/(?P<pk>\d+)/$', new_plan_accion, name="new_plan_accion"),
 
-    url(r'^peligros_pa/$', peligros_plan_accion, name="peligros_pa")
+    url(r'^peligros_pa/$', peligros_plan_accion, name="peligros_pa"),
+
+    # Para Peligros
+    url(r'^peligros/$', peligros, name="peligros"),
+    url(r'^peligros/nuevo/$', new_peligro, name="new_peligro"),
+    url(r'^peligros/edit/(?P<pk>\d+)/$', edit_peligro, name="edit_peligro")
+
 ]
 

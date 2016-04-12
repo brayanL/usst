@@ -70,13 +70,6 @@
             $(this).addClass('highlight').siblings().removeClass('highlight');
 
             btn_detalle.prop("href","/list_evaluaciones/det/"+id+ "/");
-
-            if(opcion == "M"){
-                btn_ver.prop("href",id);
-            }
-            if(opcion == "P"){
-                btn_ver.prop("href",id);
-            }
         });
 
         $(document).on("change", "#selec_op", function(){

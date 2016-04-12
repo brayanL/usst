@@ -11,3 +11,12 @@ class EvalRiesgoForm(ModelForm):
             "fecha_eval": DateInput(attrs={"class": "form-control", "required": True}),
             "fecha_ul_eval": DateInput(attrs={"class": "form-control"})
         }
+
+class PeligrosForm(ModelForm):
+    class Meta:
+        model = PeligroDetalle
+        fields = "__all__"
+        widgets = {
+            "nombre": TextInput(attrs={"class": "form-control", "required": True}),
+            "factor_r": Select(attrs={"class": "form-control", "required": True})
+        }

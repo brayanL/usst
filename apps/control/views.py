@@ -74,6 +74,7 @@ def new_eval_riesgo(request):
 
 
 # todo -> con el simbolo - en order by los registros son ordenados de manera descendente
+@login_required
 def list_eval_riesgo(request, op):
     if request.method == "GET":
         if op == "t":
@@ -96,14 +97,23 @@ def list_eval_riesgo(request, op):
             return render(request, "evaluaciones/list_eval_riesgo.html", {"evaluaciones": evaluaciones, "selec": "P"})
 
 '''
-    Para listar los peligros asociados a una evaluacion de riesgo especifica
+    Para listar los peligros , medidas de control y planes de accion de
+    una Evaluacion de Riesgo
 '''
-def view_edit_peligros_er(request, pk):
-    peligros_eval = PeligroEvaluacion.objects.filter(evaluacion=pk)  # Para obtener todos los peligros asociados a una evaluacion
-    er = EvaluacionRiesgo.objects.get(pk=pk)  # Para mostrar datos de la Evaluacion de Riesgos
+@login_required
+def det_eval_riesgo(request, pk):
+    # Para obtener todos los peligros asociados a una evaluacion
+    peligros_eval = PeligroEvaluacion.objects.filter(evaluacion=pk)
+    er = EvaluacionRiesgo.objects.get(pk=pk)
 
-    return render(request, "evaluaciones/list_peligros_eval.html", {"peligros": peligros_eval, "id_er": pk, "er": er})
+    #Para obtener las medidas de control
+    medidas = MedidaControl.objects.filter(peligro_eval__evaluacion=pk, peligro_eval__realizo_medida=True)
 
+    #Para optener los planes de accion
+    planes = PlanAccion.objects.filter(peligro_eval__evaluacion=pk, peligro_eval__realizo_plan=True)
+
+    return render(request, "evaluaciones/list_peligros_eval.html", {"peligros": peligros_eval, "medidas": medidas,
+                                                                    "planes": planes, "id_er": pk, "er": er})
 
 #Para obtener los colores
 def carga_colores(request):
@@ -132,6 +142,7 @@ def total_eval_pendientes(request):
         eval_r = PeligroEvaluacion.objects.filter(realizo_medida=False).values('evaluacion').distinct().count()
         return HttpResponse(json.dumps(eval_r), content_type='application/json')
 
+@login_required
 def eval_pendientes(request):
     #id de evaluaciones pendientes
     # Obtengo todos los peligros de una evaluacion especifica
@@ -148,6 +159,7 @@ def eval_pendientes(request):
     return render(request, "evaluaciones/list_eval_pendientes.html", {"evaluaciones": evaluacion})
 
 
+@login_required
 def new_medida_control(request, pk):
     if request.method == "POST":
         try:
@@ -207,6 +219,7 @@ def total_medidas_pendientes(request):
 
 
 # todo - para poder listar las evaluaciones de riesgo que tienen planes de accion por realizar
+@login_required
 def medidas_pendientes(request):
     evaluacion = []
     ev_id = PeligroEvaluacion.objects.filter(realizo_plan=False).values('evaluacion').distinct()
@@ -218,7 +231,28 @@ def medidas_pendientes(request):
     return render(request, "medidas/list_medida_control.html", {"evaluaciones": evaluacion})
 
 
+@login_required
 def new_plan_accion(request, pk):
+    if request.method == "POST":
+        filas = int(request.POST['num_filas'])
+        rpor = request.POST['r_por']  # Plan de Accion Realizado por
+        next_ev = request.POST['next_ev']  # Proxima Evaluacion
+        usuario = request.user.id
+        for f in range(filas):
+            pe = request.POST['pe'+str(f)]  # Peligro
+            ar = request.POST['ar'+str(f)]  # Accion requerida
+            re = request.POST['re'+str(f)]  # Responsable
+            fef = request.POST['fef'+str(f)]  # Fecha de Finalizacion
+            fec = request.POST['fec'+str(f)]  # Fecha Comprobacion
+
+            # update los peligros que pasaron a plan de accion
+            PlanAccion.objects.filter(peligro_eval=pe).update(usuario=usuario, accion=ar, responsable=re,
+                                                              fecha_finalizacion=fef, fecha_firma=fec,
+                                                              realizado_por=rpor, next_evaluacion=next_ev)
+
+            # Actualiza el Peligro para indicar que ya se realizo el plan de accion
+            PeligroEvaluacion.objects.filter(pk=pe).update(realizo_plan=True)
+
     er = EvaluacionRiesgo.objects.get(pk=pk)
     return render(request, "medidas/new_plan_accion.html", {"er": er})
 
@@ -229,3 +263,32 @@ def peligros_plan_accion(request):
         peligros = list(PeligroEvaluacion.objects.filter(realizo_plan=False, evaluacion=id_er).values(
             'id','orden', 'peligro_det__nombre', 'peligro_det__factor_r__nombre'))
         return HttpResponse(json.dumps(peligros), content_type='application/json')
+
+
+def peligros(request):
+    pe = PeligroDetalle.objects.all()
+    return render(request, "peligros/peligros.html", {"peligros": pe})
+
+
+def new_peligro(request):
+    if request.method == "POST":
+        form_pe = PeligrosForm(request.POST)
+        if form_pe.is_valid():
+            form_pe.save()
+            messages.info(request, "Se ha guardado con éxito el nuevo peligro.")
+            return redirect("/peligros/")
+    form_pe = PeligrosForm()
+    return render(request, "peligros/nuevo.html", {"form": form_pe})
+
+
+def edit_peligro(request, pk):
+    pe = PeligroDetalle.objects.get(pk=pk)
+    if request.method == "POST":
+        form_pe = PeligrosForm(request.POST, instance=pe)
+        if form_pe.is_valid():
+            form_pe.save()
+            messages.info(request, "Se ha editado con éxito el peligro.")
+            return redirect("/peligros/")
+
+    form_pe = PeligrosForm(instance=pe)
+    return render(request, "peligros/editar.html", {"form": form_pe})

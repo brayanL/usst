@@ -40,7 +40,8 @@
     {% endblock css %}
 
     {% block js %}
-        <script src="https://code.jquery.com/jquery-2.2.2.min.js"></script>
+        <!--<script src="https://code.jquery.com/jquery-2.2.2.min.js"></script>-->
+        <script src="{% static 'sb-admin/js/jquery.js' %}"></script>
 
         <!-- Bootstrap Core JavaScript -->
         <script src="{% static 'sb-admin/js/bootstrap.min.js' %}"></script>
@@ -98,12 +99,12 @@
                         <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-user">
-                        <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
+                        <li><a href="#"><i class="fa fa-user fa-fw"></i> Perfil</a>
                         </li>
-                        <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
+                        <li><a href="#"><i class="fa fa-gear fa-fw"></i> Cambiar Contraseña</a>
                         </li>
                         <li class="divider"></li>
-                        <li><a href="{% url 'inicio_app:logout' %}"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                        <li><a href="{% url 'inicio_app:logout' %}"><i class="fa fa-sign-out fa-fw"></i> Cerrar Sesion</a>
                         </li>
                     </ul>
                     <!-- /.dropdown-user -->
@@ -153,7 +154,10 @@
                             <!-- /.nav-second-level -->
                         </li>
                         <li>
-                            <a href=""><i class="fa "></i></a>
+                            <a href="{% url 'control_app:peligros' %}"><i class="fa fa-cloud"></i> Peligros</a>
+                        </li>
+                        <li>
+                            <a href=""><i class="fa fa-users"></i> Usuarios</a>
                         </li>
                     </ul>
                 </div>
@@ -173,9 +177,9 @@
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
-            {% block contenido %}
-
-            {% endblock contenido %}
+            <div class="row">
+                {% block contenido %}{% endblock contenido %}
+            </div>
         </div>
         <!-- /#page-wrapper -->
     </div>

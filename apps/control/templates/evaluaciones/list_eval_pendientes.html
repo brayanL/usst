@@ -30,7 +30,7 @@
         {% endfor %}
 
         $(document).ready(function(){
-            $("#tb_evp").dataTable({
+            $("#tb_evp").DataTable({
                 "data": datos,
                 "columns":[
                     {"title": "ID"},
@@ -42,7 +42,8 @@
                     {"title": "Usuario"},
                     {"title": "Evalucion"},
                 ]
-            })});
+            })
+        });
 
         tabla.on('click', 'tr', function(){
             var $td = $(this).closest('tr').children('td');

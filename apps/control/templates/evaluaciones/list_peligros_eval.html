@@ -27,17 +27,48 @@
             </div>
         </div>
     </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-warning">
+                <div class="panel-heading"><strong>Medidas de Control</strong></div>
+                <div class="panel-body">
+                    <div class="table-responsive form-inline">
+                        <table id="tb_medidas" class="table table-bordered table-striped display table-color" aria-describedby="lista de medidas">
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-success">
+                <div class="panel-heading"><strong>Planes de Accion</strong>&nbsp;&nbsp;<span id="rp"></span>&nbsp;&nbsp;<span id="ne"></span></div>
+                <div class="panel-body">
+                    <div class="table-responsive form-inline">
+                        <table id="tb_paccion" class="table table-bordered table-striped display table-color" aria-describedby="lista de planes de accion">
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <script type="text/javascript">
 
         var datos = [];
         var probabilidad = [[],[],[]];
         var consecuencia = [[],[],[]];
         var estimacion = [[],[],[],[],[]];
-        console.log("Test1");
 
         $(document).ready(function(){
-            console.log("Test2");
-            obtiene_colores();
+            carga_peligros();
+            carga_medidas();
+            carga_planes();
+            //obtiene_colores();
         });
 
         function obtiene_colores(){
@@ -65,13 +96,12 @@
                         estimacion[j][1]= response["colores"][2]["estimacion"][j].nombre;
                         estimacion[j][2]= response["colores"][2]["estimacion"][j].color;
                     }
-                    carga_datos();
                 }
             });
         }
 
-        function carga_datos(){
-
+        function carga_peligros(){
+            var datos= [];
             {% for pe in peligros %}
                 datos.push(["{{ pe.orden }}","{{ pe.peligro_det.factor_r.nombre }}", "{{ pe.peligro_det.nombre }}",
                     "{{ pe.probabilidad }}", "{{ pe.consecuencias }}", "{{ pe.estimacion }}", "{{ pe.priorizacion }}"]);
@@ -87,6 +117,47 @@
                     {"title": "Consecuencia"},
                     {"title": "Estimacion de Riesgo"},
                     {"title": "Priorizacion"}
+                ]
+            });
+        }
+
+        function carga_medidas(){
+            var medidas= [];
+            {% for me in medidas %}
+                medidas.push(["{{ me.peligro_eval.orden }}", "{{ me.peligro_eval.peligro_det.factor_r.nombre }} - {{ me.peligro_eval.peligro_det.nombre }}",
+                    "{{ me.medida_control }}", "{{ me.procedimiento }}", "{{ me.informacion }}", "{{ me.formacion }}","{% if me.riesgo_controlado %}Si{% else %}No{% endif %}"]);
+            {% endfor %}
+            $("#tb_medidas").DataTable({
+                "data": medidas,
+                "columns":[
+                    {"title": "N°"},
+                    {"title": "Peligro"},
+                    {"title": "Medida Control"},
+                    {"title": "Procedimiento de Trabajo"},
+                    {"title": "Informacion"},
+                    {"title": "Formacion"},
+                    {"title": "Riesgo Controlado?"}
+                ]
+            });
+        }
+
+        function carga_planes(){
+            var planes= [];
+            {% if planes %}
+                {% for p in planes %}
+                    planes.push(["{{ p.peligro_eval.orden }}", "{{ p.peligro_eval.peligro_det.factor_r.nombre }} - {{ p.peligro_eval.peligro_det.nombre }}",
+                    "{{ p.accion }}","{{ p.responsable }}","{{ p.fecha_finalizacion }}","{{ p.fecha_firma }}"]);
+                {% endfor %}
+            {% endif %}
+            $("#tb_paccion").DataTable({
+                "data": planes,
+                "columns":[
+                    {"title": "N°"},
+                    {"title": "Peligro"},
+                    {"title": "Accion Requerida"},
+                    {"title": "Responsable"},
+                    {"title": "Fecha Finalizacion"},
+                    {"title": "Comprobacion Eficacia (Fecha)"}
                 ]
             });
         }

@@ -17,85 +17,97 @@
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="panel panel-success">
-                <div class="panel-heading">Detalle</div>
-                <div class="panel-body">
-                    <table id="tb_paccion" class="table table-bordered table-color">
-                        <thead>
-                        <tr>
-                            <th style="display:none;"></th>
-                            <th class="col-xs-1" >N° Peligro</th>
-                            <th class="col-xs-2">Detalle</th>
-                            <th class="col-md-3" >Accion Requerida</th>
-                            <th class="col-md-2" >Responsable</th>
-                            <th class="col-md-2" >Fecha Finalizacion</th>
-                            <th class="col-md-2" >Comprobacion Eficacia(Fecha)</th>
-                        </tr>
-                        </thead>
-                        <tbody id="bd_pa"></tbody>
-                        <input type="hidden" id="id_num_filas" name="num_filas">
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="panel panel-default">
-                <div class="row">
-                    <div class="col-md-5">
-                        <div class="input-group" style="padding: 15px;">
-                            <span class="input-group-addon">Realizado por:</span>
-                            <input type="text" class="form-control">
-                        </div>
-                    </div>
-                    <div class="col-md-5">
-                        <div class="input-group" style="padding: 15px;">
-                            <span class="input-group-addon">Proxima Evaluacion:</span>
-                            <input type="text" class="form-control">
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="pull-right" style="padding: 15px;">
-                            <button class="btn btn-primary"><i class="fa fa-floppy-o"></i> Guardar</button>
-                        </div>
+    <form action="/nuevo_plan_accion/{{ er.id }}/" method="post">{% csrf_token %}
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-success">
+                    <div class="panel-heading">Detalle</div>
+                    <div class="panel-body">
+                        <table id="tb_paccion" class="table table-bordered table-color">
+                            <thead>
+                            <tr>
+                                <th style="display:none;"></th>
+                                <th class="col-xs-1" >N° Peligro</th>
+                                <th class="col-xs-2">Detalle</th>
+                                <th class="col-md-3" >Accion Requerida</th>
+                                <th class="col-md-2" >Responsable</th>
+                                <th class="col-md-2" >Fecha Finalizacion</th>
+                                <th class="col-md-2" >Comprobacion Eficacia(Fecha)</th>
+                            </tr>
+                            </thead>
+                            <tbody id="bd_pa"></tbody>
+                            <input type="hidden" id="id_num_filas" name="num_filas">
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <div class="input-group" style="padding: 15px;">
+                                <span class="input-group-addon">Realizado por:</span>
+                                <input type="text" name="r_por" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="input-group date" style="padding: 15px;">
+                                <span class="input-group-addon">Proxima Evaluacion:</span>
+                                <input type="text" name="next_ev" class="form-control" required>
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="pull-right" style="padding: 15px;">
+                                <button class="btn btn-primary"><i class="fa fa-floppy-o"></i> Guardar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
     <script type="text/javascript">
         var id_er = {{ er.id }}
-        $(document).ready(function(){
-             $.ajax({
-                data: {"id_er": id_er},
-                dataType: "json",
-                contentType:"application/json; charset=utf-8",
-                url: "/peligros_pa/",
-                type: "get",
-                success: function(response){
-                    agregar_filas(response)
-                    console.log(response)
-                }
-            });
-        });
+                $(document).ready(function(){
+                    $.ajax({
+                        data: {"id_er": id_er},
+                        dataType: "json",
+                        contentType:"application/json; charset=utf-8",
+                        url: "/peligros_pa/",
+                        type: "get",
+                        success: function(response){
+                            agregar_filas(response)
+
+                            //Para las fechas
+                            var picker = $('.date').datetimepicker({
+                                locale: 'es',
+                                showTodayButton: true,
+                                format: 'YYYY-MM-DD'
+                            });
+                        }
+                    });
+                });
 
         function agregar_filas(pe){
             for(var i=0; i<pe.length; i++){
                 $("#tb_paccion tbody").append(
-                         '<tr>' +
-                                '<td style="display:none;"><input type="text" name="id_pe'+i+'" value="'+pe[i].id+'"></td>'+
-                                '<td>'+pe[i].orden+'</td>'+
-                                '<td>'+pe[i].peligro_det__factor_r__nombre+'('+pe[i].peligro_det__nombre+')</td>'+
-                                '<td><input type="text" name="ar'+i+'" class="form-control" required></td>'+
-                                '<td><input type="text" name="re'+i+'" class="form-control" required></td>'+
-                                '<td><input type="text" name="fef'+i+'" class="form-control" required></td>'+
-                                '<td><input type="text" name="fec'+i+'" class="form-control" required></td>'+
-                         '</tr>'
+                        '<tr>' +
+                        '<td style="display:none;"><input type="text" name="pe'+i+'" value="'+pe[i].id+'"></td>'+
+                        '<td>'+pe[i].orden+'</td>'+
+                        '<td>'+pe[i].peligro_det__factor_r__nombre+'('+pe[i].peligro_det__nombre+')</td>'+
+                        '<td><input type="text" name="ar'+i+'" class="form-control" required></td>'+
+                        '<td><input type="text" name="re'+i+'" class="form-control" required></td>'+
+                        '<td><div class="input-group date"><input type="text" name="fef'+i+'" class="form-control" required><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span></div></td>'+
+                        '<td><div class="input-group date"><input type="text" name="fec'+i+'" class="form-control" required><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span></div></td>'+
+                        '</tr>'
                 );
             }
+            $("#id_num_filas").val(pe.length);
         }
     </script>
 {% endblock contenido %}
