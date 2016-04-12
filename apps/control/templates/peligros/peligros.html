@@ -11,11 +11,8 @@
                 </div>
             </div>
             <div class="panel-body">
-                <div class="table-responsive form-inline">
-                    <table id="tb_peligros" class="table table-bordered table-striped display table-color" aria-describedby="lista de peligros">
-
-                    </table>
-                </div>
+                <table id="tb_peligros" class="table table-bordered table-striped display responsive no-wrap table-color" aria-describedby="lista de peligros">
+                </table>
             </div>
         </div>
     </div>
@@ -29,13 +26,17 @@
                 datos.push(["{{ pe.id }}", "{{ pe.factor_r.nombre }}", "{{ pe.nombre }}"]);
             {% endfor %}
 
-            $("#tb_peligros").dataTable({
+            $("#tb_peligros").DataTable({
                 "data": datos,
                 "columns":[
                     {"title": "N°"},
                     {"title": "Factor de Riesgo"},
                     {"title": "Peligro"}
-                ]});
+                ],
+                "bAutoWidth": false,
+                "responsive": true
+
+            });
         });
 
         $("#tb_peligros").on('click', 'tr', function(){

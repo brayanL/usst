@@ -5,6 +5,7 @@ from django.db import transaction
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Max
+from django.contrib.auth import authenticate, login
 from .forms import *
 from .models import FactorRiesgo, EvaluacionRiesgo, PeligroEvaluacion
 from .colores import *
@@ -292,3 +293,33 @@ def edit_peligro(request, pk):
 
     form_pe = PeligrosForm(instance=pe)
     return render(request, "peligros/editar.html", {"form": form_pe})
+
+
+def perfil_usuario(request):
+    if request.method == "POST":
+        form_user = UsuariosForm(request.POST, instance=request.user)
+        if form_user.is_valid():
+            form_user.save()
+            messages.info(request, "Sus Datos han sido Actualizados")
+    form_user = UsuariosForm(instance=request.user)
+    return render(request, "usuarios/perfil_usuario.html", {"form":form_user})
+
+
+def load_modal(request):
+    return render(request, "parts/modal_pass.html")
+
+
+def change_password(request):
+    if request.method == "POST":
+        oldpass = request.POST['oldpass']
+        usuario = User.objects.get(pk=request.user.pk)
+        if usuario.check_password(oldpass):
+            usuario.set_password(request.POST['npass'])
+            usuario.save()
+            var = authenticate(username=usuario.username, password=request.POST['npass'])
+            login(request, var)
+            messages.success(request, "Se cambio el password satisfactoriamente.")
+            return redirect("/")
+        else:
+            messages.error(request, "No se pudo cambiar la contraseña.")
+            return redirect("/")

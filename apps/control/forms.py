@@ -1,4 +1,5 @@
 from django.forms import Form, CharField, TextInput, ModelForm, Select, DateInput, NumberInput
+from django.contrib.auth.models import User
 from .models import *
 class EvalRiesgoForm(ModelForm):
     class Meta:
@@ -19,4 +20,15 @@ class PeligrosForm(ModelForm):
         widgets = {
             "nombre": TextInput(attrs={"class": "form-control", "required": True}),
             "factor_r": Select(attrs={"class": "form-control", "required": True})
+        }
+
+class UsuariosForm(ModelForm):
+    class Meta:
+        model = User
+        exclude = ('is_staff', 'is_active', 'is_superuser', 'password', 'groups', 'date_joined')
+        widgets = {
+            "username": TextInput(attrs={"class": "form-control", "required": True}),
+            "first_name": TextInput(attrs={"class": "form-control"}),
+            "last_name": TextInput(attrs={"class": "form-control"}),
+            "email": TextInput(attrs={"class": "form-control", "type": "email"}),
         }

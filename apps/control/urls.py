@@ -30,7 +30,12 @@ urlpatterns = [
     # Para Peligros
     url(r'^peligros/$', peligros, name="peligros"),
     url(r'^peligros/nuevo/$', new_peligro, name="new_peligro"),
-    url(r'^peligros/edit/(?P<pk>\d+)/$', edit_peligro, name="edit_peligro")
+    url(r'^peligros/edit/(?P<pk>\d+)/$', edit_peligro, name="edit_peligro"),
+
+    #Usuarios
+    url(r'^perfil_usuario/$', perfil_usuario, name="perfil_usuario"),
+    url(r'^perfil/modal/$', load_modal, name="mpassword"),
+    url(r'^perfil/change_password/$', change_password, name="cpassword"),
 
 ]
 

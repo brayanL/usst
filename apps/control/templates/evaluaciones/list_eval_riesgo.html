@@ -24,11 +24,8 @@
                 </div>
             </div>
             <div class="panel-body">
-                <div class="table-responsive form-inline">
-                    <table id="tb_evalriesgo" class="table table-bordered table-striped display table-color" aria-describedby="lista de evaluaciones">
-
-                    </table>
-                </div>
+                <table id="tb_evalriesgo" class="table table-bordered table-striped display responsive no-wrap table-color" aria-describedby="lista de evaluaciones">
+                </table>
             </div>
         </div>
     </div>
@@ -46,7 +43,7 @@
                 "{% if eval.evaluacion  %}Inicial{% else %}Periodica{% endif %}"]);
         {% endfor %}
         $(document).ready(function(){
-            $("#tb_evalriesgo").dataTable({
+            $("#tb_evalriesgo").DataTable({
                 "data": datos,
                 "order": [[ 0, "desc" ]],
                 "columns":[
@@ -57,9 +54,11 @@
                     {"title": "Fecha Evaluacion"},
                     {"title": "Fecha Ultima"},
                     {"title": "Usuario"},
-                    {"title": "Evalucion"},
-                ]
-            })
+                    {"title": "Evalucion"}
+                ],
+                "bAutoWidth": false,
+                "responsive": true
+            });
             selec_op.val("{{ selec }}");
         });
 

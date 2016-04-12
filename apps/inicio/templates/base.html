@@ -9,7 +9,7 @@
 
     {% load staticfiles %}
     {% block css %}
-            <!-- Bootstrap Core CSS -->
+        <!-- Bootstrap Core CSS -->
         <link href="{% static 'sb-admin/css/bootstrap.min.css' %}" rel="stylesheet">
 
         <!-- MetisMenu CSS -->
@@ -34,17 +34,25 @@
         <link rel="stylesheet" href="{% static 'sb-admin/css/custom_styles.css' %}">
 
         <!-- Tables -->
-        <link rel="stylesheet" href="{% static 'sb-admin/css/plugins/datatables/dataTables.bootstrap.min.css' %}">
-        <link rel="stylesheet" href="{% static 'sb-admin/css/plugins/datatables/buttons.dataTables.min.css' %}">
+        {#        <link rel="stylesheet" href="../static/sb-admin/css/plugins/datatables/datatables.min.css">#}
+
+        {% comment %}        <link rel="stylesheet" href="{% static 'sb-admin/css/plugins/datatables/dataTables.bootstrap.min.css' %}">
+        <!-- buttons-->
+        <link rel="stylesheet" href="{% static 'sb-admin/css/plugins/datatables/buttons.bootstrap.min.css' %}">
+        <!-- responsive-->
         <link rel="stylesheet" href="{% static 'sb-admin/css/plugins/datatables/responsive.bootstrap.min.css' %}">
+{#        <link rel="stylesheet" href="{% static 'sb-admin/css/plugins/datatables/buttons.dataTables.min.css' %}">#}{% endcomment %}
     {% endblock css %}
 
     {% block js %}
         <!--<script src="https://code.jquery.com/jquery-2.2.2.min.js"></script>-->
-        <script src="{% static 'sb-admin/js/jquery.js' %}"></script>
+        {#        <script src="{% static 'sb-admin/js/jquery-2.2.2.min.js' %}"></script>#}
 
         <!-- Bootstrap Core JavaScript -->
-        <script src="{% static 'sb-admin/js/bootstrap.min.js' %}"></script>
+        {#        <script src="{% static 'sb-admin/js/bootstrap.min.js' %}"></script>#}
+
+        <!-- Tables -->
+        <script src="{% static 'sb-admin/js/plugins/datatables/datatables.min.js' %}"></script>
 
         <!-- Metis Menu Plugin JavaScript -->
         <script src="{% static 'sb-admin/js/plugins/metisMenu/metisMenu.min.js' %} "></script>
@@ -65,12 +73,15 @@
         <!-- Para notificaciones -->
         <script src="{% static 'sb-admin/js/plugins/notify/notify.js' %}"></script>
 
-        <!-- Tables -->
-        <script src="{% static 'sb-admin/js/plugins/datatables/jquery.dataTables.min.js' %}"></script>
+        {% comment %}<script src="{% static 'sb-admin/js/plugins/datatables/jquery.dataTables.min.js' %}"></script>
         <script src="{% static 'sb-admin/js/plugins/datatables/dataTables.bootstrap.min.js' %}"></script>
+
         <script src="{% static 'sb-admin/js/plugins/datatables/dataTables.buttons.min.js' %}"></script>
         <script src="{% static 'sb-admin/js/plugins/datatables/buttons.bootstrap.min.js' %}"></script>
+
         <script src="{% static 'sb-admin/js/plugins/datatables/dataTables.responsive.min.js' %}"></script>
+        <script src="{% static 'sb-admin/js/plugins/datatables/responsive.bootstrap.min.js' %}"></script>{% endcomment %}
+
 
         <!-- Custom Js -->
         <script src="{% static 'sb-admin/js/templates.js' %}"></script>
@@ -78,7 +89,14 @@
     {% endblock js %}
 </head>
 <body>
- {% block login %}
+<div class="modal fade" id="modal_pass" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-describedby="Modal para cambiar contraseña">
+    <div class="modal-dialog modal-sm" role="document">
+        <form action="{% url "control_app:cpassword" %}" method="post">{% csrf_token %}
+            <div class="modal-content"></div>
+        </form>
+    </div>
+</div>
+{% block login %}
     <div id="wrapper">
         <!-- Navigation -->
         <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
@@ -99,9 +117,9 @@
                         <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-user">
-                        <li><a href="#"><i class="fa fa-user fa-fw"></i> Perfil</a>
+                        <li><a href="{% url 'control_app:perfil_usuario' %}"><i class="fa fa-user fa-fw"></i> Perfil</a>
                         </li>
-                        <li><a href="#"><i class="fa fa-gear fa-fw"></i> Cambiar Contraseña</a>
+                        <li><a id="cpass" href="#"><i class="fa fa-gear fa-fw"></i> Cambiar Contraseña</a>
                         </li>
                         <li class="divider"></li>
                         <li><a href="{% url 'inicio_app:logout' %}"><i class="fa fa-sign-out fa-fw"></i> Cerrar Sesion</a>
@@ -145,15 +163,6 @@
                             <!-- /.nav-second-level -->
                         </li>
                         <li>
-                            <a href="#"><i class="fa fa-files-o fa-fw"></i> Plan de Accion<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-                                <li>
-                                    <a href="#">Planes</a>
-                                </li>
-                            </ul>
-                            <!-- /.nav-second-level -->
-                        </li>
-                        <li>
                             <a href="{% url 'control_app:peligros' %}"><i class="fa fa-cloud"></i> Peligros</a>
                         </li>
                         <li>
@@ -185,7 +194,7 @@
     </div>
 {% endblock login %}
 
- <!-- Para todas las notificaciones-->
+<!-- Para todas las notificaciones-->
 <script>
     $(document).ready(function(){
         {% for message in messages %}
@@ -217,6 +226,17 @@
             success: function(response){
                 $("#bg_mp").text(response);
             }
+        });
+
+        $("#cpass").click(function(){
+            $("#modal_pass .modal-content").load('{% url "control_app:mpassword" %}');
+            $("#modal_pass").modal("show");
+        });
+
+        $("#modal_pass").on("hidden.bs.modal", function(e){
+            $(".modal-header").remove();
+            $(".modal-body").remove();
+            $(".modal-footer").remove();
         });
     }
 </script>
