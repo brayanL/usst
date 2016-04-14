@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
-{% block titulo_pagina %} Evaluacion de Riesgo{% endblock titulo_pagina %}
-{% block titulo %}Evaluacion de Riesgo{% endblock titulo %}
+{% block titulo_pagina %} Analisis de Riesgo{% endblock titulo_pagina %}
+{% block titulo %}Analisis de Riesgo{% endblock titulo %}
 {% block contenido %}
     <form action="{% url 'control_app:new_eval_riesgo' %}" method="post">{% csrf_token %}
         <!--Cabecera -->

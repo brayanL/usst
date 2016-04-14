@@ -114,7 +114,7 @@
             <ul class="nav navbar-top-links navbar-right">
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                        <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
+                        {{ request.user.username }}<i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-user">
                         <li><a href="{% url 'control_app:perfil_usuario' %}"><i class="fa fa-user fa-fw"></i> Perfil</a>
@@ -136,37 +136,41 @@
                     <ul class="nav" id="side-menu">
 
                         <li>
-                            <a href="{% url 'inicio_app:index' %}"><i class="fa fa-dashboard fa-fw"></i> Inicio</a>
+                            <a href="{% url 'inicio_app:index' %}"><i class="fa fa-dashboard fa-fw"></i> Gestión de Riesgo</a>
                         </li>
                         <li>
-                            <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Evaluacion Riesgo<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level {{ collapse_er }}">
+                            <a href=""><i class="fa fa-line-chart"></i> Criterios de Evaluacion <span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level collapse">
+                                <!-- Analisis de Riesgo -->
                                 <li>
-                                    <a class="{{ active_n }}" href="{% url 'control_app:new_eval_riesgo' %}">Nuevo</a>
+                                    <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Analisis de Riesgos<span class="fa arrow"></span></a>
+                                    <ul class="nav nav-third-level collapse {{ collapse_er }}">
+                                        <li>
+                                            <a class="{{ active_n }}" href="{% url 'control_app:new_eval_riesgo' %}">Nuevo</a>
+                                        </li>
+                                        <li>
+                                            <a href="/list_evaluaciones/t/">Analisis de Riesgos</a>
+                                        </li>
+                                        <li>
+                                            <a href="{% url 'control_app:eval_pendientes' %}">AR Pendientes <span id="bg_ep" class="badge">0</span></a>
+                                        </li>
+                                    </ul>
+                                    <!-- /.nav-second-level -->
                                 </li>
+                                <!-- Medida de Control -->
                                 <li>
-                                    <a href="/list_evaluaciones/t/">Evaluaciones</a>
-                                </li>
-                                <li>
-                                    <a href="{% url 'control_app:eval_pendientes' %}">Evaluaciones Pendientes <span id="bg_ep" class="badge">0</span></a>
+                                    <a href="#"><i class="fa fa-sitemap fa-fw"></i> Medida de Control<span class="fa arrow"></span></a>
+                                    <ul class="nav nav-third-level collapse">
+                                        <li>
+                                            <a href="{% url 'control_app:medidas_pendientes' %}">Medidas Pendientes <span id="bg_mp" class="badge">0</span></a>
+                                        </li>
+                                    </ul>
+                                    <!-- /.nav-second-level -->
                                 </li>
                             </ul>
-                            <!-- /.nav-second-level -->
                         </li>
                         <li>
-                            <a href="#"><i class="fa fa-sitemap fa-fw"></i> Medida de Control<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-                                <li>
-                                    <a href="{% url 'control_app:medidas_pendientes' %}">Medidas Pendientes <span id="bg_mp" class="badge">0</span></a>
-                                </li>
-                            </ul>
-                            <!-- /.nav-second-level -->
-                        </li>
-                        <li>
-                            <a href="{% url 'control_app:peligros' %}"><i class="fa fa-cloud"></i> Peligros</a>
-                        </li>
-                        <li>
-                            <a href=""><i class="fa fa-users"></i> Usuarios</a>
+                            <a href="{% url 'control_app:peligros' %}"><i class="fa fa-bomb"></i> Peligros</a>
                         </li>
                     </ul>
                 </div>
