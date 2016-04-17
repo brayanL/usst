@@ -1,14 +1,13 @@
 from django.conf.urls import url
 from .views import *
-from .reportes import *
 
 urlpatterns = [
     url(r'^eval_riesgo/$', new_eval_riesgo, name='new_eval_riesgo'),
     url(r'^carga_friesgos/$', carga_friesgos, name='carga_friesgos'),
     url(r'^carga_peligros/$', carga_peligros, name='carga_peligros'),
 
-    url(r'^list_evaluaciones/$', list_eval_riesgo, name="evaluciones"),
-    url(r'^list_evaluaciones/edit/(?P<pk>\d+)/$', view_edit_peligros_er, name="edit_er"),
+    url(r'^list_evaluaciones/(?P<op>\w)/$', list_eval_riesgo, name="list_evaluciones"),
+    url(r'^list_evaluaciones/det/(?P<pk>\d+)/$', det_eval_riesgo, name="det_eval_riesgo"),
 
     url(r'^carga_colores/$', carga_colores, name="carga_colores"),
 
@@ -22,9 +21,21 @@ urlpatterns = [
 
     url(r'^total_medidas_pendientes/$', total_medidas_pendientes, name="tmed_pendientes"),
 
+    url(r'^medidas_pendientes/$', medidas_pendientes, name="medidas_pendientes"),
 
+    url(r'^nuevo_plan_accion/(?P<pk>\d+)/$', new_plan_accion, name="new_plan_accion"),
 
-    #URLs correspondiente a los reportes
-    url(r'^reporte/prueba$', reportePrueba, name="reporte_prueba"),#/(?P<id>\d+)
+    url(r'^peligros_pa/$', peligros_plan_accion, name="peligros_pa"),
+
+    # Para Peligros
+    url(r'^peligros/$', peligros, name="peligros"),
+    url(r'^peligros/nuevo/$', new_peligro, name="new_peligro"),
+    url(r'^peligros/edit/(?P<pk>\d+)/$', edit_peligro, name="edit_peligro"),
+
+    #Usuarios
+    url(r'^perfil_usuario/$', perfil_usuario, name="perfil_usuario"),
+    url(r'^perfil/modal/$', load_modal, name="mpassword"),
+    url(r'^perfil/change_password/$', change_password, name="cpassword"),
+
 ]
 

@@ -1,4 +1,12 @@
 {% extends 'base.html' %}
+{% block css %}
+    {{ block.super }}
+    <style>
+        body{
+            background-image: url('../static/sb-admin/image/geometry2.png');
+        }
+    </style>
+{% endblock css %}
 {% block login %}
     <div class="container">
         <div class="row">

@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block titulo_pagina %} Editar Peligro{% endblock titulo_pagina %}
+{% block titulo %}Editar Peligro{% endblock titulo %}
+{% block contenido %}
+    <form method="post">{% csrf_token %}
+        {% include 'parts/controls_peligro.html' %}
+    </form>
+{% endblock contenido %}

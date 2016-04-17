@@ -1,28 +1,41 @@
 {% extends 'base.html' %}
-{% block titulo_pagina %}Lista Evaluacion de Riesgo{% endblock titulo_pagina %}
-{% block titulo %}Lista Evaluacion de Riesgo{% endblock titulo %}
+{% block titulo_pagina %}Analisis de Riesgo{% endblock titulo_pagina %}
+{% block titulo %}Analisis de Riesgo{% endblock titulo %}
+{% block extras %}
+    <div class="page-header">
+        <div class="input-group">
+            <form id="form_lista" method="get">{% csrf_token %}
+            </form>
+            <span class="input-group-addon">Opciones</span>
+            <select class="form-control" name="" id="selec_op">
+                <option value="M">Medidas</option>
+                <option value="P">Planes</option>
+                <option value="T">Todos</option>
+            </select>
+        </div>
+    </div>
+{% endblock extras %}
 {% block contenido %}
     <div class="col-lg-12">
         <div class="panel panel-info">
-            <div class="panel-heading">Evaluaciones de Riesgo
+            <div class="panel-heading">Analisis de Riesgos
                 <div class="pull-right">
-                    <a id="planes" class="btn btn-primary btn-xs"><i class="fa fa-list-alt"></i> Planes</a>
-                    <a id="medidas" class="btn btn-warning btn-xs"><i class="fa fa-list-alt"></i> Medidas</a>
                     <a id="detalles_er" class="btn btn-success btn-xs"><i class="fa fa-list-alt"></i> Detalles</a>
                 </div>
             </div>
             <div class="panel-body">
-                <div class="table-responsive form-inline">
-                    <table id="tb_evalriesgo" class="table table-bordered table-striped display table-color" aria-describedby="lista de evaluaciones">
-
-                    </table>
-                </div>
+                <table id="tb_evalriesgo" class="table table-bordered table-striped display responsive no-wrap table-color" aria-describedby="lista de evaluaciones">
+                </table>
             </div>
         </div>
     </div>
     <script type="text/javascript">
         var tabla = $("#tb_evalriesgo");
-        var btn_detalle = $("#detalles_er")
+        var btn_detalle = $("#detalles_er");
+        var selec_op = $("#selec_op");
+        var opcion = $("#selec_op option:selected").val();
+        var id;
+        var formulario = $("#form_lista");
         var datos = [];
         {% for eval in evaluaciones %}
             datos.push(["{{ eval.id }}", "{{ eval.localizacion }}", "{{ eval.puesto }}", "{{ eval.trabajadores }}",
@@ -30,8 +43,9 @@
                 "{% if eval.evaluacion  %}Inicial{% else %}Periodica{% endif %}"]);
         {% endfor %}
         $(document).ready(function(){
-            $("#tb_evalriesgo").dataTable({
+            $("#tb_evalriesgo").DataTable({
                 "data": datos,
+                "order": [[ 0, "desc" ]],
                 "columns":[
                     {"title": "ID"},
                     {"title": "Localizacion"},
@@ -40,11 +54,51 @@
                     {"title": "Fecha Evaluacion"},
                     {"title": "Fecha Ultima"},
                     {"title": "Usuario"},
-                    {"title": "Evalucion"},
-                ]
-            })});
+                    {"title": "Evalucion"}
+                ],
+                "bAutoWidth": false,
+                "responsive": true
+            });
+            selec_op.val("{{ selec }}");
+        });
 
-        eventos_tabla(tabla, btn_detalle);
+        tabla.on('click', 'tr', function(){
+            var $td = $(this).closest('tr').children('td');
+            id = $td.eq(0).text();
 
+            $(this).addClass('highlight').siblings().removeClass('highlight');
+
+            btn_detalle.prop("href","/list_evaluaciones/det/"+id+ "/");
+        });
+
+        $(document).on("change", "#selec_op", function(){
+
+            //Get Value option selected
+            var select = $(this).val();
+            if(select == "M"){
+                formulario.prop("action","{% url 'control_app:list_evaluciones' "m" %}");
+                formulario.submit();
+            }
+            if(select == "P"){
+                formulario.prop("action","{% url 'control_app:list_evaluciones' "p" %}");
+                formulario.submit();
+            }
+            if(select == "T"){
+                formulario.prop("action","{% url 'control_app:list_evaluciones' "t" %}");
+                formulario.submit();
+            }
+        });
+
+        {% comment %}btn_ver.click(function(){
+            //Se debe seleccionar una fila de la tabla y una opcion en el
+            // select para poder ejecutar la accion
+            if(btn_ver.prop("href")){
+                if(opcion == "M"){
+                }
+            }
+            else{
+                $.notify("Debe Seleccionar una Fila y la opcion seleccionada debe ser Medida o Plan", { position:"top center", "className": "error"});
+            }
+        });{% endcomment %}
     </script>
 {% endblock contenido %}
