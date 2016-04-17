@@ -1,5 +1,6 @@
 from django.conf.urls import url
 from .views import *
+from .reportes import *
 
 urlpatterns = [
     url(r'^eval_riesgo/$', new_eval_riesgo, name='new_eval_riesgo'),
@@ -21,5 +22,9 @@ urlpatterns = [
 
     url(r'^total_medidas_pendientes/$', total_medidas_pendientes, name="tmed_pendientes"),
 
+
+
+    #URLs correspondiente a los reportes
+    url(r'^reporte/prueba$', reportePrueba, name="reporte_prueba"),#/(?P<id>\d+)
 ]
 

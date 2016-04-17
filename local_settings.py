@@ -10,7 +10,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         "NAME": "usst_db",
         "USER": "postgres",
-        "PASSWORD": "poker12324",
+        "PASSWORD": "12345",
         "HOST": "localhost",
         "PORT": "5432",
     }
