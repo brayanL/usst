@@ -71,7 +71,7 @@ class PeligroEvaluacion(models.Model):
 
 class MedidaControl(models.Model):
     usuario = models.ForeignKey(User)
-    peligro_eval = models.ForeignKey(PeligroEvaluacion)
+    peligro_eval = models.ForeignKey(PeligroEvaluacion, related_name='rmedida_control')
     medida_control = models.CharField(max_length=100, null=True)
     procedimiento = models.CharField(max_length=100, null=True)
     informacion = models.CharField(max_length=100, null=True)
@@ -83,7 +83,7 @@ class MedidaControl(models.Model):
 
 class PlanAccion(models.Model):
     usuario = models.ForeignKey(User)
-    peligro_eval = models.ForeignKey(PeligroEvaluacion)
+    peligro_eval = models.ForeignKey(PeligroEvaluacion, related_name='rplan_accion')
     accion = models.CharField(max_length=100, null=True)
     responsable = models.CharField(max_length=50, null=True)
     fecha_finalizacion = models.DateField(null=True)

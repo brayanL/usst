@@ -1,5 +1,6 @@
 from django.conf.urls import url
 from .views import *
+from .reportes import *
 
 urlpatterns = [
     url(r'^eval_riesgo/$', new_eval_riesgo, name='new_eval_riesgo'),
@@ -36,6 +37,8 @@ urlpatterns = [
     url(r'^perfil_usuario/$', perfil_usuario, name="perfil_usuario"),
     url(r'^perfil/modal/$', load_modal, name="mpassword"),
     url(r'^perfil/change_password/$', change_password, name="cpassword"),
+
+    url(r'^reporte/evaluacion/riesgo/(?P<pk_evaluacion>\d+)/$', reporteEvaluacionRiesgo, name="reporte_evaluacion_riesgo"),
 
 ]
 

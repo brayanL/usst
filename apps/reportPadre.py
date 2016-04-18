@@ -11,14 +11,15 @@ from reportlab.pdfbase.pdfmetrics import registerFontFamily
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 
+import time
+
+fechaSistema = time.strftime("%d/%m/%y")
 
 def __encabezado_A4_Horizontal(canvas, doc):
     listPosLogo = [90,70]
     ####
     canvas.saveState()
-    #canvas.drawImage("apps/inicio/static/sbadmin/img/cmz2.png", 10, 10,
-     #                width=listPosLogo[0],
-      #               height=listPosLogo[1])
+    canvas.drawImage("apps/inicio/static/sb-admin/image/logoUtmach.png", 105, 515, 70, 65)
     canvas.setFont('Helvetica-Bold', 13)
     canvas.drawString(280, 550, "UNIVERSIDAD TECNICA DE MACHALA")
 
@@ -29,9 +30,28 @@ def __encabezado_A4_Horizontal(canvas, doc):
     canvas.drawString(230, 495, "SISTEMA DE GESTION DE SEGURIDAD Y SALUD EN EL TRABAJO")
 
     canvas.setFont('Times-Roman', 12)
-    canvas.drawString(170, 480, "MATRIZ DE INDENTIFICACION DE PELIGROS, EVALUCACION DE RIESGOS Y CONTROL")
+    canvas.drawString(160, 480, "MATRIZ DE INDENTIFICACION DE PELIGROS, EVALUCACION DE RIESGOS Y CONTROL")
+
+
+
+    canvas.setFont('Helvetica-Bold', 10)
+    canvas.drawString(705, 550, "VERSION: 00")
+
+    canvas.setFont('Helvetica-Bold', 10)
+    canvas.drawString(675, 540, "CÓDIGO")
+
+    canvas.setFont('Helvetica-Bold', 10)
+    canvas.drawString(705, 530, "UTMACH-USST")
+
+    canvas.setFont('Helvetica-Bold', 10)
+    canvas.drawString(675, 520, "FECHA:")
+
+    canvas.setFont('Helvetica-Bold', 10)
+    canvas.drawString(705, 510, "%s"%fechaSistema)
+
 
     canvas.restoreState()
+
 
 
 def generar_pdf(titulo, elementsFilaPage):
@@ -39,13 +59,14 @@ def generar_pdf(titulo, elementsFilaPage):
     buff = BytesIO()
     doc = BaseDocTemplate(buff, pagesize=landscape(A4), title=titulo)
     doc.addPageTemplates([
-            PageTemplate(id='cabecera', frames=Frame(inch/3, inch/3, 800, 560, id='normal', showBoundary=1),
+            PageTemplate(id='cabecera', frames=Frame(inch/3, inch/3, 800, 560, id='normal', showBoundary=0),
                          onPage=__encabezado_A4_Horizontal),
         ]
         )
     story = []
-    #story.append(Spacer(0, 50))
+    styles = getSampleStyleSheet()
 
+    story.append(Spacer(0, 150))
     for i in elementsFilaPage:
          story.append(i)
 
