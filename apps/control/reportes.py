@@ -13,9 +13,7 @@ from .colores import *
 def reporteEvaluacionRiesgo(request, pk_evaluacion):
     er = EvaluacionRiesgo.objects.get(pk=pk_evaluacion)
     peligros_eval = PeligroEvaluacion.objects.filter(evaluacion=er)
-    styles = getSampleStyleSheet()
     story = []
-
     list_peligros_eval_for_table = [(pe.orden, pe.peligro_det.factor_r.nombre, pe.peligro_det.nombre,
                       pe.probabilidad, pe.consecuencias, pe.estimacion, pe.priorizacion)for pe in peligros_eval]
 
@@ -25,35 +23,8 @@ def reporteEvaluacionRiesgo(request, pk_evaluacion):
         inicial = '*'
     else:
         periodica = '*'
-    table = Table([
-        ['Evaluación General de Riesgos'],
-        ['Localización %s'%er.localizacion,'','','','Evaluación','',''],
-        ['','','','','Inicial [ %s ]            Periodica [ %s ]'%(inicial, periodica), '',''],
-        ['Puestos de Trabajo: %s'%er.puesto,'','','','Fecha Evaluación: %s'%er.fecha_eval,'',''],
-        ['N° Trabajadores: %s'%er.trabajadores,'','','','Fecha Ultima Evaluación: %s'%er.fecha_ul_eval,'',''],
-        ['N°','Factor Riesgo','Peligro Identificado','Probabilidad','Consecuencia','Estimazión Riesgo','Priorización']
-    ]+list_peligros_eval_for_table
-        , colWidths=[40, 140, 200, 90, 90, 110, 110, 110]
-        , rowHeights=16)
 
-    list_color = []
-    color = colores()
-    pro, nose, estimacion = color.colores_tabla_matrices()
-    for pe in peligros_eval:
-        print(pe.estimacion)
-        if pe.estimacion == 'T':
-            list_color.append(estimacion[0][2])
-            print('??',colors.HexColor(estimacion[0][2], False, False))
-        if pe.estimacion == 'TO':
-            list_color.append(estimacion[1][2])
-        if pe.estimacion == 'M':
-            list_color.append(estimacion[2][2])
-        if pe.estimacion == 'I':
-            list_color.append(estimacion[3][2])
-        if pe.estimacion == 'IN':
-            list_color.append(estimacion[4][2])
-
-    lista_estilo = [
+    estilo_table = TableStyle([
         ('SPAN',(0,0),(-1,0)),
         ('SPAN',(0,1),(3,2)),
         ('SPAN',(4,1),(6,1)),
@@ -63,25 +34,30 @@ def reporteEvaluacionRiesgo(request, pk_evaluacion):
 
         ('SPAN',(4,3),(6,3)),
         ('SPAN',(4,4),(6,4)),
-        #('SPAN',(0,1),(-1,1)),
         ('FONTSIZE', (0, 0), (-1, 0), 10),
-        #('FONTSIZE', (56, 1), (0, 1), 12),
         ('FONT', (0, 0), (-1, 0), 'Times-Bold'),
         ('ALIGN', (0, 0), (-1, 1), 'CENTER'),
         ('GRID', (0, 0), (-1, -1), 1, colors.black),
-    ]
+    ])
+
+    estilo_table=colores().poner_colores(peligros_eval, estilo_table)
+
+    table = Table([
+        ['Evaluación General de Riesgos'],
+        ['Localización %s'%er.localizacion,'','','','Evaluación','',''],
+        ['','','','','Inicial [ %s ]            Periodica [ %s ]'%(inicial, periodica), '',''],
+        ['Puestos de Trabajo: %s'%er.puesto,'','','','Fecha Evaluación: %s'%er.fecha_eval,'',''],
+        ['N° Trabajadores: %s'%er.trabajadores,'','','','Fecha Ultima Evaluación: %s'%er.fecha_ul_eval,'',''],
+        ['N°','Factor Riesgo','Peligro Identificado','Probabilidad','Consecuencia','Estimazión Riesgo','Priorización']
+    ]+list_peligros_eval_for_table
+        , colWidths=[40, 140, 200, 90, 90, 110, 110, 110]
+        , rowHeights=16, style = estilo_table)
     table.setStyle([
 
     ])
     story.append(table)
     return reporteMedidaControl(story,  peligros_eval)
 
-
-def ponerColores(list_color):
-    tupla_color = []
-    for i in range(len(list_color)):
-        tupla_color.append(('BACKGROUND',(5,6),(5,i+6), '#ffff99'))
-    return tupla_color
 
 def reporteMedidaControl(story, list_peligros_eval):
     styles = getSampleStyleSheet()

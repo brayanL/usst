@@ -89,3 +89,55 @@ class colores:
 
         return probabilidad, consecuencia, estimacion
 
+
+    def poner_colores(self, peligros_eval, estilo_table):
+        color_probabilidad, color_consecuencia, color_estimacion = colores().colores_tabla_matrices()
+        indice_colum_stimacion = 6
+        indice_colum_probabilidad = 6
+        indice_colum_consecuencia = 6
+        for pe in peligros_eval:
+            print(pe.estimacion)
+            if pe.estimacion == 'T':
+                estilo_table.add('BACKGROUND', (5, indice_colum_stimacion), (5, indice_colum_stimacion),
+                                 color_estimacion[0][2])
+            if pe.estimacion == 'TO':
+                estilo_table.add('BACKGROUND', (5, indice_colum_stimacion), (5, indice_colum_stimacion),
+                                 color_estimacion[1][2])
+            if pe.estimacion == 'M':
+                estilo_table.add('BACKGROUND', (5, indice_colum_stimacion), (5, indice_colum_stimacion),
+                                 color_estimacion[2][2])
+            if pe.estimacion == 'I':
+                estilo_table.add('BACKGROUND', (5, indice_colum_stimacion), (5, indice_colum_stimacion),
+                                 color_estimacion[3][2])
+            if pe.estimacion == 'IN':
+                estilo_table.add('BACKGROUND', (5, indice_colum_stimacion), (5, indice_colum_stimacion),
+                                 color_estimacion[4][2])
+
+
+            if pe.probabilidad == 'B':
+                estilo_table.add('BACKGROUND', (3, indice_colum_probabilidad), (3, indice_colum_probabilidad),
+                                 color_probabilidad[0][2])
+            if pe.probabilidad == 'M':
+                estilo_table.add('BACKGROUND', (3, indice_colum_probabilidad), (3, indice_colum_probabilidad),
+                                 color_probabilidad[1][2])
+            if pe.probabilidad == 'A':
+                estilo_table.add('BACKGROUND', (3, indice_colum_probabilidad), (3, indice_colum_probabilidad),
+                                 color_probabilidad[2][2])
+
+
+            if pe.consecuencias == 'LD':
+                estilo_table.add('BACKGROUND', (4, indice_colum_consecuencia), (4, indice_colum_consecuencia),
+                                 color_consecuencia[0][2])
+            if pe.consecuencias == 'D':
+                estilo_table.add('BACKGROUND', (4, indice_colum_consecuencia), (4, indice_colum_consecuencia),
+                                 color_consecuencia[1][2])
+            if pe.consecuencias == 'ED':
+                estilo_table.add('BACKGROUND', (4, indice_colum_consecuencia), (4, indice_colum_consecuencia),
+                                 color_consecuencia[2][2])
+            print('index_col_est',indice_colum_probabilidad)
+            indice_colum_stimacion = indice_colum_stimacion+1
+            indice_colum_probabilidad=indice_colum_probabilidad+1
+            indice_colum_consecuencia = indice_colum_consecuencia+1
+        return estilo_table
+
+
