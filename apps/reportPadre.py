@@ -19,7 +19,7 @@ def __encabezado_A4_Horizontal(canvas, doc):
     listPosLogo = [90,70]
     ####
     canvas.saveState()
-    canvas.drawImage("apps/inicio/static/sb-admin/image/logoUtmach.png", 105, 515, 70, 65)
+    canvas.drawImage("apps/inicio/static/sb-admin/image/logoUtmach.jpg", 105, 515, 85, 65)
     canvas.setFont('Helvetica-Bold', 13)
     canvas.drawString(280, 550, "UNIVERSIDAD TECNICA DE MACHALA")
 

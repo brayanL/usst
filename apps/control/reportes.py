@@ -13,9 +13,7 @@ from .colores import *
 def reporteEvaluacionRiesgo(request, pk_evaluacion):
     er = EvaluacionRiesgo.objects.get(pk=pk_evaluacion)
     peligros_eval = PeligroEvaluacion.objects.filter(evaluacion=er)
-    styles = getSampleStyleSheet()
     story = []
-
     list_peligros_eval_for_table = [(pe.orden, pe.peligro_det.factor_r.nombre, pe.peligro_det.nombre,
                       pe.probabilidad, pe.consecuencias, pe.estimacion, pe.priorizacion)for pe in peligros_eval]
 
@@ -25,35 +23,8 @@ def reporteEvaluacionRiesgo(request, pk_evaluacion):
         inicial = '*'
     else:
         periodica = '*'
-    table = Table([
-        ['Evaluación General de Riesgos'],
-        ['Localización %s'%er.localizacion,'','','','Evaluación','',''],
-        ['','','','','Inicial [ %s ]            Periodica [ %s ]'%(inicial, periodica), '',''],
-        ['Puestos de Trabajo: %s'%er.puesto,'','','','Fecha Evaluación: %s'%er.fecha_eval,'',''],
-        ['N° Trabajadores: %s'%er.trabajadores,'','','','Fecha Ultima Evaluación: %s'%er.fecha_ul_eval,'',''],
-        ['N°','Factor Riesgo','Peligro Identificado','Probabilidad','Consecuencia','Estimazión Riesgo','Priorización']
-    ]+list_peligros_eval_for_table
-        , colWidths=[40, 140, 200, 90, 90, 110, 110, 110]
-        , rowHeights=16)
 
-    list_color = []
-    color = colores()
-    pro, nose, estimacion = color.colores_tabla_matrices()
-    for pe in peligros_eval:
-        print(pe.estimacion)
-        if pe.estimacion == 'T':
-            list_color.append(estimacion[0][2])
-            print('??',colors.HexColor(estimacion[0][2], False, False))
-        if pe.estimacion == 'TO':
-            list_color.append(estimacion[1][2])
-        if pe.estimacion == 'M':
-            list_color.append(estimacion[2][2])
-        if pe.estimacion == 'I':
-            list_color.append(estimacion[3][2])
-        if pe.estimacion == 'IN':
-            list_color.append(estimacion[4][2])
-
-    lista_estilo = [
+    estilo_table = TableStyle([
         ('SPAN',(0,0),(-1,0)),
         ('SPAN',(0,1),(3,2)),
         ('SPAN',(4,1),(6,1)),
@@ -63,25 +34,32 @@ def reporteEvaluacionRiesgo(request, pk_evaluacion):
 
         ('SPAN',(4,3),(6,3)),
         ('SPAN',(4,4),(6,4)),
-        #('SPAN',(0,1),(-1,1)),
         ('FONTSIZE', (0, 0), (-1, 0), 10),
-        #('FONTSIZE', (56, 1), (0, 1), 12),
         ('FONT', (0, 0), (-1, 0), 'Times-Bold'),
-        ('ALIGN', (0, 0), (-1, 1), 'CENTER'),
+        ('FONT', (0, 5), (-1, 5), 'Times-Bold'),
+        ('ALIGN', (0, 0), (-1, 0), 'CENTER'),
+        ('ALIGN', (1, 1), (-1, 1), 'CENTER'),
         ('GRID', (0, 0), (-1, -1), 1, colors.black),
-    ]
+    ])
+
+    estilo_table=colores().poner_colores(peligros_eval, estilo_table)
+
+    table = Table([
+        ['Evaluación General de Riesgos'],
+        ['Localización %s'%er.localizacion,'','','','Evaluación','',''],
+        ['','','','','Inicial [ %s ]            Periodica [ %s ]'%(inicial, periodica), '',''],
+        ['Puestos de Trabajo: %s'%er.puesto,'','','','Fecha Evaluación: %s'%er.fecha_eval,'',''],
+        ['N° Trabajadores: %s'%er.trabajadores,'','','','Fecha Ultima Evaluación: %s'%er.fecha_ul_eval,'',''],
+        ['N°','Factor Riesgo','Peligro Identificado','Probabilidad','Consecuencia','Estimazión Riesgo','Priorización']
+    ]+list_peligros_eval_for_table
+        , colWidths=[40, 140, 200, 90, 90, 110, 110, 110]
+        , rowHeights=16, style = estilo_table)
     table.setStyle([
 
     ])
     story.append(table)
     return reporteMedidaControl(story,  peligros_eval)
 
-
-def ponerColores(list_color):
-    tupla_color = []
-    for i in range(len(list_color)):
-        tupla_color.append(('BACKGROUND',(5,6),(5,i+6), '#ffff99'))
-    return tupla_color
 
 def reporteMedidaControl(story, list_peligros_eval):
     styles = getSampleStyleSheet()
@@ -134,72 +112,78 @@ def reporteMedidaControl(story, list_peligros_eval):
         return reportePlanAccion(story, list_med_control_priori)
     else:
         story.append(Paragraph("No hay reporte de medida de control", styles['Normal']))
-        return generar_pdf('EL TITULOX', story)
+        return generar_pdf('Analisis de Riesgo', story)
 
 
 def reportePlanAccion(story, list_med_control):
     styles = getSampleStyleSheet()
     list_plan_accion = []
-    for mc in list_med_control:
-        if not mc.riesgo_controlado:
-            print('Agregar los q no tienen riesgo controlado, Si hay reporte')
-            list_plan_accion.append(mc.peligro_eval.rplan_accion.get(peligro_eval=mc.peligro_eval.id))
+    try:
+        for mc in list_med_control:
+            if not mc.riesgo_controlado:
+                print('Agregar los q no tienen riesgo controlado, Si hay reporte')
+                print('xxxxx',mc.peligro_eval.id)
+                list_plan_accion.append(mc.peligro_eval.rplan_accion.get(peligro_eval=mc.peligro_eval.id))
+            else:
+                print('Si hay riesgo controlado, No hay reporte')
+        print('Fin for 2222')
+        print(list_plan_accion.__len__())
+        if list_plan_accion.__len__()>0:
+            story.append(PageBreak())
+            story.append(Spacer(0, 140))
+            list_plan_for_table = [(p.peligro_eval.orden,
+                        p.accion,
+                        p.responsable,
+                        p.fecha_finalizacion, p.fecha_firma) for p in list_plan_accion]
+
+            table = Table([
+                ['Plan de Acción'],
+                              [' Peligro', 'Accion requerida', 'Responsable', 'Fecha finalización','Comprobacion'
+                                                            'Eficacia de la acción   (Firma y Fecha)'],
+            ]+list_plan_for_table, colWidths=[45, 195, 180, 100, 280], rowHeights=16)
+            table.setStyle([
+                ('SPAN',(0,0),(-1,0)),
+                ('FONTSIZE', (0, 0), (-1, 1), 12),
+                #('FONTSIZE', (56, 1), (0, 1), 12),
+                ('FONT', (0, 0), (-1, 1), 'Times-Bold'),
+                #('FONT', (0, 1), (0, 1), 'Helvetica-Bold'),
+                #('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                ('ALIGN', (0, 0), (-1, 1), 'CENTER'),
+                ('GRID', (0, 0), (-1, -1), 1, colors.black),
+
+                #('GRID', (0, 3), (-1, 3), 1, colors.black),
+                #('BACKGROUND', (1, 1), (1, -1), colors.dodgerblue)
+            ])
+            story.append(table)
+
+            table_footer= Table([
+                ['Elaborado por: %s'%list_plan_accion.__getitem__(0).usuario.first_name+' '+
+                    list_plan_accion.__getitem__(0).usuario.last_name,'','','','Firma:'],
+                ['Plan de acción realizado por: %s'%list_plan_accion.__getitem__(0).realizado_por,'','','','Firma:'],
+                ['','','','',''],
+                ['Fecha proxima de evaluación: %s'%list_plan_accion.__getitem__(0).next_evaluacion]
+            ],colWidths=[95,160,120,145,280])
+            table_footer.setStyle([
+                ('SPAN',(0,0),(3,0)),
+                ('SPAN',(0,1),(3,1)),
+                ('SPAN',(0,3),(4,3)),
+                ('FONTSIZE', (0, 0), (-1, 0), 10),
+                #('FONTSIZE', (56, 1), (0, 1), 12),
+                ('FONT', (0, 0), (-1, -1), 'Times-Bold'),
+                #('FONT', (0, 1), (0, 1), 'Helvetica-Bold'),
+                #('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                #('ALIGN', (0, 0), (-1, 0), 'CENTER'),
+                ('GRID', (0, 0), (-1, -1), 1, colors.black),
+
+                #('GRID', (0, 3), (-1, 3), 1, colors.black),
+                #('BACKGROUND', (1, 1), (1, -1), colors.dodgerblue)
+            ])
+            story.append(table_footer)
         else:
-            print('Si hay riesgo controlado, No hay reporte')
-    print('Fin for 2222')
-    print(list_plan_accion.__len__())
-    if list_plan_accion.__len__()>0:
-        story.append(PageBreak())
-        story.append(Spacer(0, 140))
-        list_plan_for_table = [(p.peligro_eval.orden,
-                    p.accion,
-                    p.responsable,
-                    p.fecha_finalizacion, p.fecha_firma) for p in list_plan_accion]
-
-        table = Table([
-            ['Plan de Acción'],
-                          [' Peligro', 'Accion requerida', 'Responsable', 'Fecha finalización','Comprobacion'
-                                                        'Eficacia de la acción   (Firma y Fecha)'],
-        ]+list_plan_for_table, colWidths=[40, 205, 205, 85, 265], rowHeights=16)
-        table.setStyle([
-            ('SPAN',(0,0),(-1,0)),
-            ('FONTSIZE', (0, 0), (-1, 0), 10),
-            #('FONTSIZE', (56, 1), (0, 1), 12),
-            ('FONT', (0, 0), (-1, 0), 'Times-Bold'),
-            #('FONT', (0, 1), (0, 1), 'Helvetica-Bold'),
-            #('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-            ('ALIGN', (0, 0), (-1, 1), 'CENTER'),
-            ('GRID', (0, 0), (-1, -1), 1, colors.black),
-
-            #('GRID', (0, 3), (-1, 3), 1, colors.black),
-            #('BACKGROUND', (1, 1), (1, -1), colors.dodgerblue)
-        ])
-        story.append(table)
-
-        table_footer= Table([
-            ['Elaborado por: %s'%list_plan_accion.__getitem__(0).usuario.first_name+' '+
-                list_plan_accion.__getitem__(0).usuario.last_name,'','','','Firma:'],
-            ['Plan de acción realizado por: %s'%list_plan_accion.__getitem__(0).realizado_por,'','','','Firma:'],
-            ['','','','',''],
-            ['Fecha proxima de evaluación: %s'%list_plan_accion.__getitem__(0).next_evaluacion]
-        ],colWidths=[95,160,120,160,265])
-        table_footer.setStyle([
-            ('SPAN',(0,0),(3,0)),
-            ('SPAN',(0,1),(3,1)),
-            ('SPAN',(0,3),(4,3)),
-            ('FONTSIZE', (0, 0), (-1, 0), 10),
-            #('FONTSIZE', (56, 1), (0, 1), 12),
-            ('FONT', (0, 0), (-1, -1), 'Times-Bold'),
-            #('FONT', (0, 1), (0, 1), 'Helvetica-Bold'),
-            #('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-            #('ALIGN', (0, 0), (-1, 0), 'CENTER'),
-            ('GRID', (0, 0), (-1, -1), 1, colors.black),
-
-            #('GRID', (0, 3), (-1, 3), 1, colors.black),
-            #('BACKGROUND', (1, 1), (1, -1), colors.dodgerblue)
-        ])
-        story.append(table_footer)
-    else:
-        story.append(Paragraph("No hay reporte de Plan de acion", styles['Normal']))
-    return generar_pdf('EL TITULOX', story)
+            story.append(Paragraph("\
+            No hay reporte de Plan de Acción", styles['Normal']))
+    except Exception:
+        story.append(Paragraph("\
+        No hay reporte de Plan de Acción", styles['Normal']))
+    return generar_pdf('Analisis de Riesgo', story)
 
