@@ -180,10 +180,8 @@ def reportePlanAccion(story, list_med_control):
             ])
             story.append(table_footer)
         else:
-            story.append(Paragraph("\
-            No hay reporte de Plan de Acción", styles['Normal']))
+            story.append(Paragraph("\n No hay reporte de Plan de Acción" , styles['Normal']))
     except Exception:
-        story.append(Paragraph("\
-        No hay reporte de Plan de Acción", styles['Normal']))
+        story.append(Paragraph("\n No hay reporte de Plan de Acción", styles['Normal']))
     return generar_pdf('Analisis de Riesgo', story)
 

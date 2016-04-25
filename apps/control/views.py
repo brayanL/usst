@@ -66,7 +66,7 @@ def new_eval_riesgo(request):
                     messages.info(request, "Ingrese Datos Correctos.")
         except Exception as error:
             transaction.rollback()
-            messages.error(request, "Error en la transaccion: " + str(error))
+            messages.error(request, "Error: Problabemente existen peligros duplicados, o algun error desconocido.")
             print("Error: ", str(error))
             #return redirect('/eval_riesgo/')
             #return render(request.POST, "new_eval_riesgo.html")

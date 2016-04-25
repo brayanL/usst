@@ -1,6 +1,11 @@
 {% extends 'base.html' %}
 {% block titulo_pagina %}Peligros de Evaluacion de Riesgo{% endblock titulo_pagina %}
 {% block titulo %}Peligros de Evaluacion <span style="color: green">{{ id_er }}</span>{% endblock titulo %}
+{% block extras %}
+    <div class="page-header">
+        <a class="btn btn-warning" href="{% url 'control_app:reporte_evaluacion_riesgo' er.id %}"><i class="fa fa-file-pdf-o"></i> Generar PDF</a>
+    </div>
+{% endblock extras %}
 {% block contenido %}
     <div class="row">
         <div class="col-lg-12">
@@ -8,8 +13,6 @@
                 <span><strong>Fecha Evaluacion:</strong> {{ er.fecha_eval }}</span>
                 &nbsp;&nbsp;
                 <span><strong>Puesto:</strong> {{ er.puesto }}</span>
-                &nbsp;&nbsp;
-                <span><strong>Responsable:</strong> {{ er.usuario.first_name }} {{ er.usuario.last_name }}</span>
             </div>
         </div>
     </div>

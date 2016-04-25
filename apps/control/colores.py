@@ -9,28 +9,28 @@ import json;
 class colores:
     def colores_tabla(self):
         data = {"colores":
-                    [{"probabilidad":
-                      [
-                          {"abr": "B", "nombre": "Baja", "color": "#ffbb99"},
-                          {"abr": "M", "nombre": "Media", "color": "#ffff00"},
-                          {"abr": "A", "nombre": "Alta", "color": "#ff3300"}]
-                      },
-                     {"consecuencia":
-                      [
-                          {"abr": "LD", "nombre": "Ligeramente Dañino", "color": "#ffbb99"},
-                          {"abr": "D", "nombre": "Dañino", "color": "#ffff00"},
-                          {"abr": "ED", "nombre": "Extremadamente Dañino", "color": "#ff3300"}
-                      ]},
-                     {"estimacion":
-                      [
-                          {"abr": "T", "nombre": "Trivial", "color": "#ffff99"},
-                          {"abr": "TO", "nombre": "Tolerable", "color": "#ffff00"},
-                          {"abr": "M", "nombre": "Moderado", "color": "#ff6666"},
-                          {"abr": "I", "nombre": "Importante", "color": "#c2c2d6"},
-                          {"abr": "IN", "nombre": "Intolerable", "color": "#ff0000"}
-                      ]}
-                     ]
-                }
+            [{"probabilidad":
+                [
+                    {"abr": "B", "nombre": "Baja", "color": "#ffbb99"},
+                    {"abr": "M", "nombre": "Media", "color": "#ffff00"},
+                    {"abr": "A", "nombre": "Alta", "color": "#ff3300"}]
+            },
+                {"consecuencia":
+                    [
+                        {"abr": "LD", "nombre": "Ligeramente Dañino", "color": "#ffbb99"},
+                        {"abr": "D", "nombre": "Dañino", "color": "#ffff00"},
+                        {"abr": "ED", "nombre": "Extremadamente Dañino", "color": "#ff3300"}
+                    ]},
+                {"estimacion":
+                    [
+                        {"abr": "T", "nombre": "Trivial", "color": "#ffff99"},
+                        {"abr": "TO", "nombre": "Tolerable", "color": "#ffff00"},
+                        {"abr": "M", "nombre": "Moderado", "color": "#ff6666"},
+                        {"abr": "I", "nombre": "Importante", "color": "#c2c2d6"},
+                        {"abr": "IN", "nombre": "Intolerable", "color": "#ff0000"}
+                    ]}
+            ]
+        }
         return data
 
     def colores_tabla_matrices(self):
