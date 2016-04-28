@@ -34,7 +34,11 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="panel panel-warning">
-                <div class="panel-heading"><strong>Medidas de Control</strong></div>
+                <div class="panel-heading">
+                    <strong>Medidas de Control</strong>
+                    &nbsp;&nbsp;
+                    <strong>Usuario: </strong>{{ medidas.0.usuario }}
+                </div>
                 <div class="panel-body">
                     <div class="table-responsive form-inline">
                         <table id="tb_medidas" class="table table-bordered table-striped display table-color" aria-describedby="lista de medidas">
@@ -49,7 +53,11 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="panel panel-success">
-                <div class="panel-heading"><strong>Planes de Accion</strong>&nbsp;&nbsp;<span id="rp"></span>&nbsp;&nbsp;<span id="ne"></span></div>
+                <div class="panel-heading">
+                    <strong>Planes de Accion</strong>
+                    &nbsp;&nbsp;
+                    <strong>Usuario: </strong>{{ planes.0.usuario }}
+                </div>
                 <div class="panel-body">
                     <div class="table-responsive form-inline">
                         <table id="tb_paccion" class="table table-bordered table-striped display table-color" aria-describedby="lista de planes de accion">

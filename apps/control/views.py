@@ -234,26 +234,34 @@ def medidas_pendientes(request):
 
 @login_required
 def new_plan_accion(request, pk):
-    if request.method == "POST":
-        filas = int(request.POST['num_filas'])
-        rpor = request.POST['r_por']  # Plan de Accion Realizado por
-        next_ev = request.POST['next_ev']  # Proxima Evaluacion
-        usuario = request.user.id
-        for f in range(filas):
-            pe = request.POST['pe'+str(f)]  # Peligro
-            ar = request.POST['ar'+str(f)]  # Accion requerida
-            re = request.POST['re'+str(f)]  # Responsable
-            fef = request.POST['fef'+str(f)]  # Fecha de Finalizacion
-            fec = request.POST['fec'+str(f)]  # Fecha Comprobacion
+    try:
+        with transaction.atomic():
+            if request.method == "POST":
+                filas = int(request.POST['num_filas'])
+                rpor = request.POST['r_por']  # Plan de Accion Realizado por
+                next_ev = request.POST['next_ev']  # Proxima Evaluacion
+                usuario = request.user.id
+                for f in range(filas):
+                    pe = request.POST['pe'+str(f)]  # Peligro
+                    ar = request.POST['ar'+str(f)]  # Accion requerida
+                    re = request.POST['re'+str(f)]  # Responsable
+                    fef = request.POST['fef'+str(f)]  # Fecha de Finalizacion
+                    fec = request.POST['fec'+str(f)]  # Fecha Comprobacion
 
-            # update los peligros que pasaron a plan de accion
-            PlanAccion.objects.filter(peligro_eval=pe).update(usuario=usuario, accion=ar, responsable=re,
-                                                              fecha_finalizacion=fef, fecha_firma=fec,
-                                                              realizado_por=rpor, next_evaluacion=next_ev)
+                    # update los peligros que pasaron a plan de accion
+                    PlanAccion.objects.filter(peligro_eval=pe).update(usuario=usuario, accion=ar, responsable=re,
+                                                                      fecha_finalizacion=fef, fecha_firma=fec,
+                                                                      realizado_por=rpor, next_evaluacion=next_ev)
 
-            # Actualiza el Peligro para indicar que ya se realizo el plan de accion
-            PeligroEvaluacion.objects.filter(pk=pe).update(realizo_plan=True)
+                    # Actualiza el Peligro para indicar que ya se realizo el plan de accion
+                    PeligroEvaluacion.objects.filter(pk=pe).update(realizo_plan=True)
 
+                messages.info(request, "Se ha guardado con éxito el nuevo registro.")
+                return redirect("/medidas_pendientes/")
+    except Exception as error:
+        transaction.rollback()
+        messages.error(request, "Ha ocurrido un error al Guardar")
+        print("Error: ", str(error))
     er = EvaluacionRiesgo.objects.get(pk=pk)
     return render(request, "medidas/new_plan_accion.html", {"er": er})
 
